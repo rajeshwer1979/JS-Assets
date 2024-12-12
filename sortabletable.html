@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <style>
+        #ceo th,
+        #ceo td {
+            padding: 10px 30px;
+        }
+
+        #ceo th {
+            background: #333;
+            color: white;
+        }
+
+            #ceo th.asc:after {
+                display: inline;
+                content: '↓';
+            }
+
+            #ceo th.desc:after {
+                display: inline;
+                content: '↑';
+            }
+
+        #ceo td {
+            background: #ccc;
+        }
+    </style>
+    <script>
+        $(function () {
+            $('table')
+                .on('click', 'th', function () {
+                    var index = $(this).index(),
+                        rows = [],
+                        thClass = $(this).hasClass('asc') ? 'desc' : 'asc';
+
+                    $('#ceo th').removeClass('asc desc');
+                    $(this).addClass(thClass);
+
+                    $('#ceo tbody tr').each(function (index, row) {
+                        rows.push($(row).detach());
+                    });
+
+                    rows.sort(function (a, b) {
+                        var aValue = $(a).find('td').eq(index).text(),
+                            bValue = $(b).find('td').eq(index).text();
+
+                        return aValue > bValue
+                            ? 1
+                            : aValue < bValue
+                                ? -1
+                                : 0;
+                    });
+
+                    if ($(this).hasClass('desc')) {
+                        rows.reverse();
+                    }
+
+                    $.each(rows, function (index, row) {
+                        $('#ceo tbody').append(row);
+                    });
+                });
+        });
+    </script>
+</head>
+<body>
+
+    <a href="https://codepen.io/fede/pen/LRqOqv">Link </a>
+    <table id="ceo">
+        <thead>
+            <tr>
+                <th title="Name">Name</th>
+                <th title="Gender">Gender</th>
+                <th title="Age">Age</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Marissa Mayer</td>
+                <td>Female</td>
+                <td>39</td>
+            </tr>
+            <tr>
+                <td>Larry Page</td>
+                <td>Male</td>
+                <td>41</td>
+            </tr>
+            <tr>
+                <td>Mark Zuckerberg</td>
+                <td>Male</td>
+                <td>30</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

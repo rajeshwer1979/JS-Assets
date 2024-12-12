@@ -1,0 +1,171 @@
+@using System.Data
+
+@*@{
+    ViewBag.Title = "VRegistrationFrom";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}*@
+<style type="text/css">
+
+    .leftTabWrap {
+        position: relative;
+    }
+    /* Style the tab */
+    .leftTab {
+        position: absolute;
+        left: 0;
+        width: 20%;
+        min-height: 300px;
+    }
+
+        /* Style the buttons that are used to open the tab content */
+        .leftTab button {
+            display: block;
+            background-color: inherit;
+            color: black;
+            padding: 10px 16px;
+            width: 100%;
+            border: 1px solid #E2D5F3;
+            background-color: #F5EDFF;
+            outline: none;
+            text-align: left;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+            /* Change background color of buttons on hover */
+            .leftTab button:hover {
+                background-color: #E2D5F3;
+            }
+
+            /* Create an active/current "tab button" class */
+            .leftTab button.active {
+                background-color: #F5EDFF;
+                border-right: none;
+                font-weight: bold;
+                color: #1A1D92;
+            }
+
+    /* Style the tab content */
+    .leftTabContent {
+        position: absolute;
+        left: 20%;
+        padding: 15px 15px;
+        border-left: none;
+        border: 1px solid #E2D5F3;
+        background-color: #F5EDFF;
+        width: 80%;
+        border-left: none;
+        min-height: 300px;
+    }
+
+        .leftTabContent.active {
+            z-index: 1
+        }
+
+        .leftTabContent h3 {
+            margin-top: 0;
+            font-size: 18px;
+            font-weight: bold;
+            color: #1A1D92;
+        }
+
+        .leftTabContent input[type='text'], .leftTabContent input[type='password'], .leftTabContent input[type="date"], .leftTabContent select {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .leftTabContent label {
+            font-weight: 400
+        }
+</style>
+
+
+<div id="tbVRegistrationFrom" class="w-100 leftTabWrap">
+    <!-- tabs-->
+    <div class="leftTab">
+        <button class="tablinks active" onclick="openCity(event, 'tab1')">Personnel Info</button>
+        <button class="tablinks" onclick="openCity(event, 'tab2')">Address Info</button>
+        <button class="tablinks" onclick="openCity(event, 'tab3')">Bank Account Info</button>
+        <button class="tablinks" onclick="openCity(event, 'tab4')">Purchasing Info</button>
+        <button class="tablinks" onclick="openCity(event, 'tab5')">Tax Info</button>
+    </div>
+
+    <!-- tabs content-->
+
+    <div id="tab1" class="leftTabContent active">
+        <h3>Personnel Info</h3>
+        <div class="row">
+            <div class="col-sm-12 col-md-4">
+                <label for="Vendor Name" class="form-label">Vendor Name</label>
+                <input class="form-control" type="text" placeholder="Enter here" aria-label="Vendor Name">
+            </div>
+            <div class="col-sm-12 col-md-4">
+                <label for="Account group" class="form-label">Account group</label>
+                <input class="form-control" type="text" placeholder="Enter here" aria-label="Account group">
+            </div>
+            <div class="col-sm-12 col-md-4">
+                <label for="General Tax Number 1" class="form-label">General Tax Number 1</label>
+                <input class="form-control" type="text" placeholder="Enter here" aria-label="General Tax Number 1">
+            </div>
+            <div class="col-sm-12 col-md-4">
+                <label for="General Tax Number 2" class="form-label">General Tax Number 2</label>
+                <input class="form-control" type="text" placeholder="Enter here" aria-label="General Tax Number 2">
+            </div>
+            <div class="col-sm-12 col-md-4">
+                <label for="VAT Registration No" class="form-label">VAT Registration No</label>
+                <input class="form-control" type="text" placeholder="Enter here" aria-label="VAT Registration No">
+            </div>
+        </div>
+    </div>
+
+    <div id="tab2" class="leftTabContent">
+        <h3>Address Info</h3>
+        <p>Paris is the capital of France.</p>
+    </div>
+
+    <div id="tab3" class="leftTabContent">
+        <h3>Bank Account Info</h3>
+        <p>Tokyo is the capital of Japan.</p>
+    </div>
+    <div id="tab4" class="leftTabContent">
+        <h3>Purchasing Info</h3>
+        <p>Tokyo is the capital of Japan.</p>
+    </div>
+    <div id="tab5" class="leftTabContent">
+        <h3>Tax Info</h3>
+        <p>Tokyo is the capital of Japan.</p>
+    </div>
+
+    <!-- buttons -->
+    <div class="w-100">
+        <button type="button" class="btn">Cancel</button>
+        <button type="button" class="btn m-3">Submit</button>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+    function openCity(evt, tabName) {
+  // Declare all variables
+  var i, tabcontent, tablinks;
+
+
+        // Get all elements with class="tabcontent" and hide them
+        tabcontent = document.getElementsByClassName("leftTabContent");
+  for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+  }
+
+  // Get all elements with class="tablinks" and remove the class "active"
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+
+  // Show the current tab, and add an "active" class to the link that opened the tab
+  evt.currentTarget.className += " active";
+  document.getElementById(tabName).style.display = "block";
+
+}
+</script>

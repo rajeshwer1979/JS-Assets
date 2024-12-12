@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+</head>
+<body>
+    <div>
+        <div>
+            <header>
+                <div class="modal-header" style="border-bottom:0px !important">
+                    <button id="DivClose" type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+            </header>
+            <h3 class="text-center"> <embed src="~/Images/Login/logo_login.svg " style="height: 50px;" /></h3>
+            <label id="errorMessage" style=" text-align: center; color: red;"></label>
+            <div class="modal-body">
+                <div class="content">
+                    <div class="login-group">
+                        <span class="input-icon"><img src="~/Images/Login/userid.svg" /></span>
+                        <input type="text" class="textbox" id="inputUserName" name="UserName" required>
+                        <span class="highlight"></span>
+                        <span class="bar"></span>
+                        <label for="Username">Username</label>
+                    </div>
+                    <div class="login-group">
+                        <span class="input-icon"><img src="~/Images/Login/password.svg" /></span>
+                        <input type="password" class="textbox" id="inputPassword" name="password" onkeydown="handleEnter(event)" required>
+                        <span class="highlight"></span>
+                        <span class="bar"></span>
+                        <label for="Password">Password</label>
+                    </div>
+                </div>
+                <div class="form-group checkbox">
+                    <input type="checkbox" name="rememberChbx" id="rememberChbx">
+                    <label>Remember me</label>
+                </div>
+                <a href="" class="forgot-pass">Forgot Password?</a>
+                <div class="text-center">
+                    <button id="POPUPbtnLogin" style="background: #08c09c; padding: 5px 30px; color: white; border-radius: 30px; border-style:none">Login</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script>
+        // Remember me
+        $(function () {
+            if (localStorage.rememberChbx && localStorage.rememberChbx != '') {
+                $('#rememberChbx').attr('checked', 'checked');
+                $('#inputUserName').val(localStorage.UserName);
+                $('#inputPassword').val(localStorage.password);
+            } else {
+                $('#rememberChbx').removeAttr('checkedd');
+                $('#inputUserName').val('');
+                $('#inputPassword').val('');
+            }
+
+            $('#rememberChbx').click(function () {
+                if ($('#rememberChbx').is(':checked')) {
+                    localStorage.UserName = $('#inputUserName').val();
+                    localStorage.password = $('#inputPassword').val();
+                    localStorage.rememberChbx = $('#rememberChbx').val();
+                } else {
+                    localStorage.UserName = '';
+                    localStorage.password = '';
+                    localStorage.rememberChbx = '';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

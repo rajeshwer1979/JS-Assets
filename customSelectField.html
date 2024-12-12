@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Select Field with Validation</title>
+   <style type="text/css">
+       /* styles.css */
+       body {
+           font-family: Arial, sans-serif;
+           margin: 50px;
+       }
+       .mb-5{
+           margin-bottom:50px;
+       }
+
+       .custom-select {
+           position: relative;
+           width: 200px;
+           cursor: pointer;
+           border: 1px solid #ccc;
+           padding: 10px;
+           background-color: white;
+           margin-bottom:20px;
+       }
+
+       .selected {
+           padding: 10px;
+           font-size: 16px;
+           color: #333;
+       }
+
+       .options {
+           display: none;
+           position: absolute;
+           top: 100%;
+           left: 0;
+           width: 100%;
+           background-color: white;
+           border: 1px solid #ccc;
+           z-index: 10;
+       }
+
+       .option {
+           padding: 10px;
+           cursor: pointer;
+       }
+
+           .option:hover {
+               background-color: #f1f1f1;
+           }
+
+       .custom-select.open .options {
+           display: block;
+       }
+
+       .error-message {
+           color: red;
+           margin-top: 10px;
+           font-size: 14px;
+       }
+
+
+       /* Radio Button.css */
+       
+
+       .custom-radio-group {
+           display: flex;
+           flex-direction: column;
+           margin-bottom: 20px;
+       }
+
+       .custom-radio {
+           display: flex;
+           align-items: center;
+           cursor: pointer;
+           margin: 5px 0;
+       }
+
+       .radio-input {
+           display: none;
+       }
+
+       .radio-button {
+           width: 20px;
+           height: 20px;
+           border-radius: 50%;
+           border: 2px solid #ccc;
+           margin-right: 10px;
+           position: relative;
+           transition: background-color 0.3s, border-color 0.3s;
+       }
+
+       .radio-input:checked + .radio-button {
+           background-color: #4caf50;
+           border-color: #4caf50;
+       }
+
+       .radio-button::after {
+           content: '';
+           position: absolute;
+           top: 50%;
+           left: 50%;
+           width: 10px;
+           height: 10px;
+           background-color: white;
+           border-radius: 50%;
+           transform: translate(-50%, -50%);
+           opacity: 0;
+           transition: opacity 0.2s;
+       }
+
+       .radio-input:checked + .radio-button::after {
+           opacity: 1;
+       }
+
+ 
+   </style>
+</head>
+<body>
+
+    <div id="error-message" class="error-message"></div>
+
+    <form id="mySelectForm" class="mb-5">
+        <label for="custom-select">Choose an option:</label>
+        <div id="custom-select" class="custom-select">
+            <div class="selected">Select an option</div>
+            <div class="options">
+                <div class="option" data-value="option1">Option 1</div>
+                <div class="option" data-value="option2">Option 2</div>
+                <div class="option" data-value="option3">Option 3</div>
+                <div class="option" data-value="option4">Option 4</div>
+            </div>
+        </div>
+
+
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <form id="myRadioForm" class="mb-5">
+        <label>Select an option:</label>
+
+        <div class="custom-radio-group">
+            <label class="custom-radio">
+                <input type="radio" name="option" value="option1" class="radio-input">
+                <span class="radio-button"></span>
+                Option 1
+            </label>
+
+            <label class="custom-radio">
+                <input type="radio" name="option" value="option2" class="radio-input">
+                <span class="radio-button"></span>
+                Option 2
+            </label>
+
+            <label class="custom-radio">
+                <input type="radio" name="option" value="option3" class="radio-input">
+                <span class="radio-button"></span>
+                Option 3
+            </label>
+        </div>
+
+        <div id="error-message" class="error-message"></div>
+
+        <button type="submit">Submit</button>
+    </form>
+
+
+    <script type="text/javascript">
+
+        // Custom Select Field
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const customSelect = document.getElementById('custom-select');
+            const selectedDiv = customSelect.querySelector('.selected');
+            const optionsDiv = customSelect.querySelector('.options');
+            const options = customSelect.querySelectorAll('.option');
+            const errorMessage = document.getElementById('error-message');
+            const form = document.getElementById('mySelectForm');
+
+            // Toggle the dropdown when clicked
+            selectedDiv.addEventListener('click', function () {
+                customSelect.classList.toggle('open');
+            });
+
+            // Set selected option
+            options.forEach(option => {
+                option.addEventListener('click', function () {
+                    selectedDiv.textContent = this.textContent; // Update the displayed option
+                    customSelect.classList.remove('open'); // Close the dropdown
+                });
+            });
+
+            // Form validation
+            form.addEventListener('submit', function (event) {
+                event.preventDefault(); // Prevent form submission for validation
+
+                const selectedValue = selectedDiv.textContent.trim();
+
+                // Check if the user has selected an option
+                if (selectedValue === 'Select an option') {
+                    errorMessage.textContent = 'Please select a valid option.';
+                } else {
+                    errorMessage.textContent = ''; // Clear the error message
+                    alert('Form submitted successfully!');
+                    // Here you can actually submit the form or handle the data
+                }
+            });
+
+            // Close the dropdown if clicked outside
+            document.addEventListener('click', function (event) {
+                if (!customSelect.contains(event.target)) {
+                    customSelect.classList.remove('open');
+                }
+            });
+        });
+
+
+        // Custom Radio Button
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('myRadioForm');
+            const errorMessage = document.getElementById('error-message');
+            const radioButtons = document.querySelectorAll('.radio-input');
+
+            // Handle form submission
+            form.addEventListener('submit', function (event) {
+                event.preventDefault(); // Prevent the form from submitting immediately
+
+                // Check if any radio button is selected
+                const selectedRadio = Array.from(radioButtons).find(radio => radio.checked);
+
+                if (!selectedRadio) {
+                    errorMessage.textContent = 'Please select an option.';
+                } else {
+                    errorMessage.textContent = ''; // Clear the error message
+                    alert('Form submitted successfully! Selected option: ' + selectedRadio.value);
+                    // Here you can actually submit the form or handle the selected option
+                }
+            });
+        });
+
+
+    </script>
+</body>
+</html>

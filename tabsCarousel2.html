@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tab Navigation</title> 
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Container for the entire tab navigation */
+        .tabs-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 800px; /* Maximum width of the tab container */
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* Style the tab list wrapper */
+        .wrap-tabs {
+            display: flex;
+            overflow: hidden; /* Hide tabs that are offscreen */
+            width: 100%;
+            transition: transform 0.3s ease; /* Smooth sliding effect */
+        }
+
+        /* Style for individual tabs */
+        .tablinks {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-right: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+            /* Highlight active tab */
+            .tablinks.active {
+                background-color: #007bff;
+                color: white;
+            }
+
+        /* Previous and Next buttons */
+        .tab-previous, .tab-next {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 20px;
+            transition: background-color 0.3s ease;
+            z-index:1;
+        }
+
+            .tab-previous:disabled, .tab-next:disabled {
+                background-color: #ddd;
+                cursor: not-allowed;
+            }
+
+            /* Add hover effect for the buttons */
+            .tab-previous:hover, .tab-next:hover {
+                background-color: #0056b3;
+            }
+
+        .tab-previous {
+            margin-right: 10px;
+        }
+
+        /* Layout adjustments for smaller screens */
+        @media (max-width: 600px) {
+            .tabs-container {
+                flex-direction: column;
+                align-items: stretch;
+                max-width: 100%;
+            }
+
+            .tab-previous, .tab-next {
+                margin-bottom: 10px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="tabs-container">
+        <button class="tab-previous" aria-label="Previous Tab">&lt;</button>
+        <div class="wrap-tabs">
+            <div class="tablinks">Tab 1</div>
+            <div class="tablinks">Tab 2</div>
+            <div class="tablinks">Tab 3</div>
+            <div class="tablinks">Tab 4</div>
+            <div class="tablinks">Tab 5</div>
+            <div class="tablinks">Tab 6</div>
+            <div class="tablinks">Tab 7</div>
+            <div class="tablinks">Tab 8</div>
+            <div class="tablinks">Tab 1</div>
+            <div class="tablinks">Tab 2</div>
+            <div class="tablinks">Tab 3</div>
+            <div class="tablinks">Tab 4</div>
+            <div class="tablinks">Tab 5</div>
+            <div class="tablinks">Tab 6</div>
+            <div class="tablinks">Tab 7</div>
+            <div class="tablinks">Tab 8</div>
+            <div class="tablinks">Tab 1</div>
+            <div class="tablinks">Tab 2</div>
+            <div class="tablinks">Tab 3</div>
+            <div class="tablinks">Tab 4</div>
+            <div class="tablinks">Tab 5</div>
+            <div class="tablinks">Tab 6</div>
+            <div class="tablinks">Tab 7</div>
+            <div class="tablinks">Tab 8</div>
+        </div>
+        <button class="tab-next" aria-label="Next Tab">&gt;</button>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
+    <script>
+        $(function () {
+            var $prev = $('.tab-previous');
+            var $next = $('.tab-next');
+            var $tabsList = $('.wrap-tabs');
+            var currentTransformX = 0;
+            var $tabs = $('.wrap-tabs .tablinks');
+            var tabWidth = $tabs.outerWidth(true);  // Get the width including margin
+            var totalTabs = $tabs.length;
+            var visibleTabs = Math.floor($tabsList.width() / tabWidth);  // Number of visible tabs based on container width
+            var maxOffsetX = (totalTabs - visibleTabs) * tabWidth;  // Maximum offset we can scroll (last tab fully visible)
+
+            // Update maxOffsetX when window is resized
+            $(window).on('resize', function () {
+                tabWidth = $tabs.outerWidth(true);  // Recalculate tab width
+                visibleTabs = Math.floor($tabsList.width() / tabWidth);  // Recalculate number of visible tabs
+                maxOffsetX = (totalTabs - visibleTabs) * tabWidth;  // Recalculate max scrollable distance
+            });
+
+            // Handle click on individual tabs to mark them as active
+            $tabs.on('click', function () {
+                $tabs.removeClass('active');
+                $(this).addClass('active');
+            });
+
+            // "Previous" button click handler
+            $prev.on('click', function () {
+                if (currentTransformX < 0) {  // We can scroll left if we're not at the first tab
+                    currentTransformX += tabWidth;
+                    $tabsList.css('transform', "translateX(" + currentTransformX + "px)");
+                }
+            });
+
+            // "Next" button click handler
+            $next.on('click', function () {
+                // Prevent scrolling past the last tab
+                if (Math.abs(currentTransformX) < maxOffsetX) {
+                    currentTransformX -= tabWidth;
+                    $tabsList.css('transform', "translateX(" + currentTransformX   + "px)");
+                }
+            });
+        });
+
+
+    </script>
+</body>
+</html>

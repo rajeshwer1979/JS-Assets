@@ -1,0 +1,133 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.js" integrity="sha512-6HrPqAvK+lZElIZ4mZ64fyxIBTsaX5zAFZg2V/2WT+iKPrFzTzvx6QAsLW2OaLwobhMYBog/+bvmIEEGXi0p1w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.js"></script>
+</head>
+<body>
+
+    <div class="d-flex justify-content-center text-center m-auto p-1 w-90">
+        <canvas id="meterialPieM" class="m-auto dbpiecart"></canvas>
+    </div>
+
+    <script>
+
+        // PIE chart
+        var xValues = ["Requests", "Pending", "Processed", "Approved"];
+        var barColors = ["#BDB0FC", "#F07F7F", "#65E1C9", "#E4EFA0"];
+
+        var canvasPieM = $('#meterialPieM').get(0).getContext('2d');
+        var canvasPieC = $('#meterialPieC').get(0).getContext('2d');
+        var canvasPieV = $('#meterialPieV').get(0).getContext('2d');
+
+
+
+        function MaterialsCount(strCount, xValues, piechartColors) {
+            var doughnutChart = new Chart(canvasPieM, {
+                type: "pie",
+                percentageInnerCutout: 70,
+                data: {
+                    datasets: [{
+                        label: 'Requests',
+                        data: strCount,
+                        backgroundColor: piechartColors,
+                        borderColor: piechartColors,
+                        borderWidth: 2,
+                        hoverBorderColor: piechartColors,
+                        hoverBorderWidth: 8,
+                        hoverOffset: 4
+                    }],
+                    labels: xValues,
+                },
+                options: {
+                    responsive: true,
+                    cutoutPercentage: 10,
+                    legend: {
+                        display: true
+                    },
+                    layout: {
+                        padding: {
+                            left: 10
+                        }
+                    },
+                    plugins: {
+
+                        layout: {
+                            padding: {
+                                bottom: 25  //set that fits the best
+                            }
+                        },
+                        legend: {
+                            onHover: (evt, legendItem) => {
+                                const activeElement = {
+                                    datasetIndex: 0,
+                                    index: legendItem.index
+                                };
+                                doughnutChart.setActiveElements([activeElement]); // to also show thick border
+                                doughnutChart.tooltip.setActiveElements([activeElement]);
+                                doughnutChart.update();
+                            },
+                            display: true,
+                            position: 'right',
+                            labels: {
+                                font: function (context) {
+                                    var width = context.chart.width;
+                                    var size = Math.round(width / 40);
+
+                                    return {
+                                        weight: 'normal',
+                                        size: size,
+                                        color: '#000000'
+                                    };
+                                },
+                                boxWidth: 10,
+                                //generateLabels: (chart) => {
+
+                                //    const datasets = chart.data.datasets;
+                                //    return datasets[0].data.map((data, i) => ({
+                                //        text: `${chart.data.labels[i]} ${data}`,
+                                //        fillStyle: datasets[0].backgroundColor[i],
+                                //        index: i
+                                //    }))
+                                //}
+
+                            }
+                        },
+                        datalabels: {
+                            formatter: (value, context) => {
+                                return value; // Display the count directly
+                            },
+                            color: 'black',
+                            display: function (context) {
+                                // Display labels only for non-zero values
+                                return context.dataset.data[context.dataIndex] > 0;
+                            },
+                            anchor: 'end', // Position the labels at the end of the arcs
+                            align: 'start', // Align the labels to the start of the arcs
+                        },
+                    },
+
+                    title: {
+                        display: true,
+                        text: "Materials Count"
+                    }
+                },
+                plugins: [ChartDataLabels]
+            });
+        }
+
+
+    </script>
+</body>
+</html>

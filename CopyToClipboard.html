@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Copy to Clipboard Example</title>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const copyButton = document.getElementById('copy-button');
+  const textToCopy = document.getElementById('text-to-copy');
+  const copyStatus = document.getElementById('copy-status');
+
+  copyButton.addEventListener('click', function () {
+    textToCopy.select(); // Select the text input 
+    document.execCommand('copy'); // Copy the selected text to the clipboard
+
+    if (document.queryCommandSupported('copy')) {
+      copyStatus.textContent = 'Text copied to clipboard';
+    } else {
+      copyStatus.textContent = 'Copying to clipboard is not supported in your browser';
+    }
+
+    // Deselect the text input
+    textToCopy.setSelectionRange(0, 0);
+  });
+});
+
+</script>
+  </head>
+  <body>
+    <input type="text" id="text-to-copy" value="Text to copy" />
+    <button id="copy-button">Copy to Clipboard</button>
+    <p id="copy-status"></p>
+
+ 
+  </body>
+</html>

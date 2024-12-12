@@ -1,0 +1,102 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>JavaScript example</title>
+    <meta charSet="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style media="only screen">
+        html, body {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            box-sizing: border-box;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        html {
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: 0;
+            overflow: auto;
+        }
+
+        body {
+            padding: 1rem;
+            overflow: auto;
+        }
+    </style>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+    <div class="outer-div">
+        <div class="button-bar">
+            <button onclick="sizeToFit()">Size to Fit</button>
+            <button onclick="autoSizeAll(false)">Auto-Size All</button>
+            <button onclick="autoSizeAll(true)">Auto-Size All (Skip Header)</button>
+        </div>
+        <div class="grid-wrapper">
+            <div id="myGrid" style="height: 100%;" class="ag-theme-alpine">
+            </div>
+        </div>
+    </div>
+    <script>var __basePath = './';</script>
+    <script src="https://unpkg.com/@ag-grid-community/all-modules@26.2.0/dist/ag-grid-community.min.js">
+    </script>
+    <script >
+        const columnDefs = [
+            { field: 'athlete', width: 150, suppressSizeToFit: true },
+            {
+                field: 'age',
+                headerName: 'Age of Athlete',
+                width: 90,
+                minWidth: 50,
+                maxWidth: 150,
+            },
+            { field: 'country', width: 120 },
+            { field: 'year', width: 90 },
+            { field: 'date', width: 110 },
+            { field: 'sport', width: 110 },
+            { field: 'gold', width: 100 },
+            { field: 'silver', width: 100 },
+            { field: 'bronze', width: 100 },
+            { field: 'total', width: 100 },
+        ];
+
+        const gridOptions = {
+            defaultColDef: {
+                resizable: true,
+            },
+            columnDefs: columnDefs,
+            rowData: null,
+            onColumnResized: (params) => {
+                console.log(params);
+            },
+        };
+
+        function sizeToFit() {
+            gridOptions.api.sizeColumnsToFit();
+        }
+
+        function autoSizeAll(skipHeader) {
+            const allColumnIds = [];
+            gridOptions.columnApi.getAllColumns().forEach((column) => {
+                allColumnIds.push(column.colId);
+            });
+
+            gridOptions.columnApi.autoSizeColumns(allColumnIds, skipHeader);
+        }
+
+        // setup the grid after the page has finished loading
+        document.addEventListener('DOMContentLoaded', () => {
+            const gridDiv = document.querySelector('#myGrid');
+            new agGrid.Grid(gridDiv, gridOptions);
+
+            fetch('https://www.ag-grid.com/example-assets/olympic-winners.json')
+                .then((response) => response.json())
+                .then((data) => gridOptions.api.setRowData(data));
+        });
+
+    </script>
+</body>
+</html>

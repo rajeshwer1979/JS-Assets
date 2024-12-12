@@ -1,0 +1,117 @@
+<html>
+<head>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+
+
+    <style type="text/css">
+        .simple-tabs-carousel-container {
+            margin: auto;
+            max-height: auto;
+            background: grey;
+            overflow: hidden;
+            max-width: 300px;
+            position: relative;
+        }
+            .simple-tabs-carousel-container:after, .simple-tabs-carousel-container :before {
+                display: block;
+                height: 0px;
+                width: 100%;
+                clear: both;
+                content: '';
+                padding: 10px;
+            }
+
+        .tab-previous, {
+            height: 100%;
+            position: absolute;
+            left: 0px;
+        }
+
+        .tab-next {
+            right: 0px;
+            position: absolute;
+            float: right;
+        }
+
+        .tabs-container {
+            width: 200px;
+            margin: auto;
+            overflow: hidden;
+        }
+
+        .simple-tabs {
+            float: left;
+            width: 500%;
+            list-style: none;
+            overflow: hidden;
+            transition: transform 1s ease-out;
+        }
+            .tab
+
+        {
+            width: 50px;
+            text-align: center;
+            float: left;
+            background: white;
+        }
+            .tab.active {
+            background: skyblue;
+        }
+
+       
+    </style>
+</head>
+<body>
+    <div class="simple-tabs-carousel-container text-center">
+
+        <div class="tabs-container">
+            <a href="#prev" class="tab-previous">prev</a>
+            <ul class="simple-tabs">
+                <li class="tab active">Home</li>
+                <li class="tab">Away</li>
+                <li class="tab">Draw</li>
+                <li class="tab">Home</li>
+                <li class="tab">Away</li>
+                <li class="tab">Draw</li>
+                <li class="tab">Home</li>
+                <li class="tab">Away</li>
+                <li class="tab">Draw</li>
+                <li class="tab">Home</li>
+                <li class="tab">Away</li>
+                <li class="tab">Draw</li>
+            </ul>
+            <a href="#next" class="tab-next">next</a>
+        </div>
+
+    </div>
+
+    <script>
+        $(function () {
+            var $prev = $('.tab-previous');
+            var $next = $('.tab-next');
+            var $tabsList = $('.simple-tabs');
+            var currentTransformX = 0;
+            var $tabs = $('.simple-tabs .tab');
+            var tabWidth = $tabs.width();
+            $tabs.on('click', function (e) {
+                $tabs.removeClass('active');
+                $(this).addClass('active');
+            });
+            $prev.on('click', function () {
+                //When left is 0 do something...
+                $tabs.position().left;
+                currentTransformX -= tabWidth;
+                $tabsList.css('transform', "translateX(" + currentTransformX + "px)");
+            });
+            $next.on('click', function () {
+                if (currentTransformX == 0) {
+                    return;
+                }
+                currentTransformX += tabWidth;
+                $tabsList.css('transform', "translateX(" + currentTransformX + "px)");
+            });
+        });
+    </script>
+</body>
+</html>
