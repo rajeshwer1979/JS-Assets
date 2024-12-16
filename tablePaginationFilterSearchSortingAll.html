@@ -1,0 +1,460 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagination with Table and Filtering</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+            cursor: pointer;
+        }
+
+            th.sortable:hover {
+                background-color: #f1f1f1;
+            }
+
+        .table-top-actions{
+            margin-bottom:10px;
+        }
+        .table_scroller {
+            height: calc(100vh - 210px);
+            overflow: auto;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .table tr th {
+            position: sticky;
+            top: 0;
+            background-color: #e5e5e5;
+        }
+
+        .table tr:nth-child(2n+1) td {
+            background-color: #f5f5f5;
+        }
+
+        .btn {
+            padding: 3px 10px;
+            margin: 0 5px;
+            cursor: pointer;
+            max-height:35px;
+        }
+
+            button:disabled {
+                background-color: #ccc;
+                cursor: not-allowed;
+            }
+
+        #page-info {
+            float: left;
+        }
+
+        #pagination {
+            float: right;
+        }
+
+        #page-number {
+            display: inline-block;
+        }
+
+            #page-number span {
+                margin: 0 5px;
+                cursor: pointer;
+            }
+
+            #page-number .active {
+                font-weight: bold;
+                text-decoration: underline;
+            }
+
+        .sorted-asc::after {
+            content: ' ↑';
+        }
+
+        .sorted-desc::after {
+            content: ' ↓';
+        }
+
+        #page-length {
+            margin-bottom: 10px;
+        }
+
+        .filter-input {
+            width: 96%;
+            padding: 5px;
+            margin-top: 5px;
+        }
+         
+
+        .paging_length {
+            float: left;
+        }
+        .d-flex{
+            display:flex;
+        }
+        .gap-10{
+            gap:10px;
+        }
+        .justify-space-between{
+            justify-content:space-between
+        } 
+
+        input[type="text"], select {
+            border: 1px solid #aaa;
+            border-radius: 3px;
+            padding: 5px;
+            background-color: transparent;
+            color: inherit;
+            width: auto
+        }
+        .filter-input[disabled] {
+            background-color: transparent;
+            border: none;
+            cursor: auto;
+            box-shadow: none;
+            padding: 0;
+            height: auto;
+            min-height: auto;
+            margin: 0;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+            background-color: #d5d5d5; /* or add it to the track */
+        }
+
+        /* Add a thumb */
+        ::-webkit-scrollbar-thumb {
+            background: #999999;
+        }
+    </style>
+</head>
+<body>
+    <div class="d-flex justify-space-between table-top-actions">
+        <div class="paging_length">
+            <!-- Page Length Select -->
+            <label for="page-length">Show</label>
+            <select id="page-length" aria-label="Select number of rows per page">
+                <option value="10">10</option>
+                <option value="15">15</option>
+                <option value="20">20</option>
+                <option value="30">30</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
+            <span>rows per page</span>
+        </div>
+        <div class="d-flex gap-10">
+            <!-- Global Search Input -->
+            <div class="d-flex gap-10">
+                <input type="text" id="global-search" class="filter-input" placeholder="Search Table" aria-label="Search through the table">
+            </div>
+            <button id="refresh" class="btn btn-primary" aria-label="Refresh Table">Refresh</button>
+            <button id="filter" class="btn btn-primary" aria-label="Filter Table">Filter</button>
+        </div>
+    </div>
+    <div class="table_scroller">
+        <table class="table" id="data-table">
+            <thead>
+                <tr id="normal-row">
+                    <th class="sortable" data-column="id">ID</th>
+                    <th class="sortable" data-column="name">Name</th>
+                    <th class="sortable" data-column="age">Age</th>
+                </tr>
+                <tr id="filter-row">
+                    <th><input type="text" id="filter-id" class="filter-input" placeholder="Filter by ID"></th>
+                    <th><input type="text" id="filter-name" class="filter-input" placeholder="Filter by Name"></th>
+                    <th><input type="text" id="filter-age" class="filter-input" placeholder="Filter by Age"></th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    <div id="page-info"></div>
+    <div id="pagination">
+        <button id="prev" aria-label="Previous page">Previous</button>
+        <div id="page-number"></div>
+        <button id="next" aria-label="Next page">Next</button>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            // Sample data
+            //const data = [
+            //    { id: 1, name: 'John', age: 28 },
+            //    { id: 2, name: 'Jane', age: 34 },
+            //    { id: 3, name: 'Alice', age: 22 },
+            //    { id: 4, name: 'Bob', age: 25 },
+            //    { id: 5, name: 'Charlie', age: 30 },
+            //    { id: 6, name: 'David', age: 29 },
+            //    { id: 7, name: 'Emma', age: 23 },
+            //    { id: 8, name: 'Frank', age: 32 },
+            //    { id: 9, name: 'Grace', age: 27 },
+            //    { id: 10, name: 'Hannah', age: 24 },
+            //    { id: 11, name: 'Isaac', age: 31 },
+            //    { id: 12, name: 'Jack', age: 26 },
+            //    { id: 13, name: 'Kathy', age: 21 },
+            //    { id: 14, name: 'Liam', age: 35 },
+            //    { id: 15, name: 'Mona', age: 33 },
+            //    { id: 16, name: 'Nina', age: 29 },
+            //    { id: 17, name: 'Oliver', age: 36 },
+            //    { id: 18, name: 'Paul', age: 28 },
+            //    { id: 19, name: 'Quincy', age: 22 },
+            //    { id: 20, name: 'Rita', age: 27 },
+            //    { id: 21, name: 'Mona', age: 33 },
+            //    { id: 22, name: 'Nina', age: 29 },
+            //    { id: 23, name: 'Oliver', age: 36 },
+            //    { id: 24, name: 'Paul', age: 28 },
+            //    { id: 25, name: 'Quincy', age: 22 },
+            //    { id: 26, name: 'Rita', age: 27 }
+            //];
+            const apiUrl = 'https://jsonplaceholder.typicode.com/posts';  // Replace with your API endpoint URL
+            let data = [];  // Data fetched from API
+
+
+            let itemsPerPage = 10;  // Default items per page
+            let currentPage = 1;
+            let totalPages = Math.ceil(data.length / itemsPerPage);
+            let sortColumn = 'id';
+            let sortOrder = 'asc'; // 'asc' or 'desc'
+            let filteredData = [...data];  // Initially, no filter applied
+
+            // Function to fetch data from API
+            function fetchData() {
+                $.ajax({
+                    url: apiUrl,
+                    method: 'GET',
+                    success: function (response) {
+                        data = response.map(item => ({
+                            id: item.id,
+                            name: item.title,  // Mapping API title to name
+                            age: item.body.length // Mapping API body length to age for example
+                        }));
+                        filteredData = [...data]; // Initially, no filter applied
+                        totalPages = Math.ceil(filteredData.length / itemsPerPage);
+                        displayData();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.error("Request failed:", textStatus, errorThrown);
+                        alert('Error fetching data. Please try again.');
+                    }
+                });
+            }
+
+            // Fetch data from API on initial load
+            fetchData();
+
+            // Function to display data
+            function displayData() {
+                const startIndex = (currentPage - 1) * itemsPerPage;
+                const endIndex = startIndex + itemsPerPage;
+                const pageData = filteredData.slice(startIndex, endIndex);
+
+                const sortedData = pageData.sort((a, b) => {
+                    if (sortColumn === 'id' || sortColumn === 'age') {
+                        // For numerical fields like ID and Age
+                        return sortOrder === 'asc' ? a[sortColumn] - b[sortColumn] : b[sortColumn] - a[sortColumn];
+                    } else {
+                        // For string fields like Name, handle undefined/empty values
+                        const valueA = a[sortColumn] ? a[sortColumn].toString() : ''; // Default to empty string if undefined
+                        const valueB = b[sortColumn] ? b[sortColumn].toString() : ''; // Default to empty string if undefined
+                        return sortOrder === 'asc' ? valueA.localeCompare(valueB) : valueB.localeCompare(valueA);
+                    }
+                });
+
+                // Render table rows
+                $('#data-table tbody').html(sortedData.map(item => `
+        <tr>
+            <td>${item.id}</td>
+            <td>${item.name}</td>
+            <td>${item.age}</td>
+        </tr>
+    `).join(''));
+
+                updatePagination();
+            }
+
+            // Function to update pagination
+            function updatePagination() {
+                // Update total pages based on filtered data
+                totalPages = Math.ceil(filteredData.length / itemsPerPage);
+
+                // Display page numbers
+                let pageButtons = '';
+                const maxVisiblePages = 5;
+                const startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+                const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+                for (let i = startPage; i <= endPage; i++) {
+                    pageButtons += `<span class="page-number ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</span>`;
+                }
+
+                $('#page-number').html(pageButtons);
+
+                // Disable Previous/Next buttons based on the current page
+                $('#prev').prop('disabled', currentPage === 1);
+                $('#next').prop('disabled', currentPage === totalPages);
+
+                // Update "Page X of Y"
+                $('#page-info').text(`Page ${currentPage} of ${totalPages}`);
+            }
+
+            // Event listeners for Prev/Next buttons
+            $('#prev').click(function () {
+                if (currentPage > 1) {
+                    currentPage--;
+                    displayData();
+                }
+            });
+
+            $('#next').click(function () {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    displayData();
+                }
+            });
+
+            // Event listeners for page number clicks
+            $(document).on('click', '.page-number', function () {
+                const page = $(this).data('page');
+                currentPage = page;
+                displayData();
+            });
+
+            
+            // Event listeners for column sorting
+            $('table th').click(function () { 
+                const column = $(this).data('column');
+                if (column === sortColumn) {
+                    // Toggle sort order
+                    sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+                } else {
+                    // Set new sort column
+                    sortColumn = column;
+                    sortOrder = 'asc';
+                }
+
+                // Update the table with sorted data
+                displayData();
+
+                // Toggle sorting indicator
+                $('table th').removeClass('sorted-asc sorted-desc');
+                if (sortOrder === 'asc') {
+                    $(this).addClass('sorted-asc');
+                } else {
+                    $(this).addClass('sorted-desc');
+                }
+            });
+
+            // Event listener for page length selection
+            $('#page-length').change(function () {
+                itemsPerPage = parseInt($(this).val());
+                currentPage = 1; // Reset to the first page
+                displayData();
+            });
+
+            // Event listener for column filtering
+            $('.filter-input').on('input', function () {
+                filterTable();
+            });
+
+
+
+            // Function to filter the table based on input values
+            function filterTable() {
+                const filterId = $('#filter-id').val().toLowerCase();
+                const filterName = $('#filter-name').val().toLowerCase();
+                const filterAge = $('#filter-age').val().toLowerCase();
+
+                
+                // Reset filteredData to the original data if all filter fields are empty
+                if (filterId === '' && filterName === '' && filterAge === '') {
+                    $('#filter-id').val('');
+                    filteredData = [...data] // Show all data if no filter is applied
+                    $('#refresh').click();
+                } else {
+                    // Filter data
+                    filteredData = data.filter(item => {
+                        // Check if each column value matches the filter input or if the filter input is empty
+                        const matchesId = filterId === '' || item.id.toString().includes(filterId);
+                        const matchesName = filterName === '' || item.name.toLowerCase().includes(filterName);
+                        const matchesAge = filterAge === '' || item.age.toString().includes(filterAge);
+
+                        // Only include the item if all column filters match (or are empty)
+                        return matchesId && matchesName && matchesAge;
+                    });
+                }
+
+                // Reset to the first page when filters change
+                currentPage = 1;
+
+                // Display updated data
+                displayData();
+            }
+
+            $('#filter-row').hide();
+            $('#normal-row').show();
+
+            $('#filter').click(function () {
+                $('table th').toggleClass('sortDisable'); 
+                $('table th').toggleClass('sortable'); 
+                $('#filter-row').toggle();
+                $('#normal-row').toggle();                
+            });
+
+            $('table').on('click', 'th.sortDisable', function () {
+                $(this).removeClass('sorted-asc');  // Remove sorted-asc class
+                $(this).removeClass('sorted-desc'); // Remove sorted-desc class
+            });
+           
+            // Event listener for refresh button
+            $('#refresh').click(function () {
+                // Reset filters and data
+                $('#filter-id').val('');
+                $('#filter-name').val('');
+                $('#filter-age').val('');
+                filteredData = [...data]; // Reset to original data
+                currentPage = 1; // Reset to the first page
+                displayData(); // Re-render the table with original data
+            });
+            // Event listener for global search input
+            $('#global-search').on('input', function () {
+                const searchQuery = $(this).val().toLowerCase();
+                filterDataBySearch(searchQuery);
+            });
+
+            // Function to filter data based on global search query
+            function filterDataBySearch(query) {
+                // If the search query is empty, reset filtered data to the original data
+                if (query === '') {
+                    filteredData = [...data];
+                } else {
+                    // Filter data based on the search query across all columns
+                    filteredData = data.filter(item => {
+                        return Object.values(item).some(value =>
+                            value.toString().toLowerCase().includes(query)
+                        );
+                    });
+                }
+
+                currentPage = 1;  // Reset to the first page when search changes
+                displayData();
+            }
+            // Initial data display
+            displayData();
+        });
+
+    </script>
+
+</body>
+</html>
