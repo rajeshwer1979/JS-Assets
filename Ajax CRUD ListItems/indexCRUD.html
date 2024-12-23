@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD Application</title>
+    <link rel="stylesheet" href="styles/style.css" />
+    <script src="Controller/controllerCrud.js"></script>
+    <style>
+        .post {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CRUD Application</h1>
+
+    <!-- Create Form -->
+    <div>
+        <h2>Create Post</h2>
+        <form id="createForm">
+            <input type="text" id="title" placeholder="Title" required><br>
+            <textarea id="body" placeholder="Body" required></textarea><br>
+            <button type="submit">Create Post</button>
+        </form>
+    </div>
+
+    <!-- Display Data -->
+    <h2>Posts</h2>
+    <div id="data-container"></div> 
+
+</body>
+</html>
