@@ -24,6 +24,11 @@
 
         .table-top-actions{
             margin-bottom:10px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            align-content:center;
+
         }
         .table_scroller {
             height: calc(100vh - 210px);
@@ -46,7 +51,8 @@
             padding: 3px 10px;
             margin: 0 5px;
             cursor: pointer;
-            max-height:35px;
+            height: 35px;
+            max-height: 35px;
         }
 
             button:disabled {
@@ -106,15 +112,19 @@
         }
         .justify-space-between{
             justify-content:space-between
-        } 
-
+        }
+        .align-items-center{
+            align-items:center;
+        }
         input[type="text"], select {
             border: 1px solid #aaa;
             border-radius: 3px;
-            padding: 5px;
+            padding: 0px 5px;
             background-color: transparent;
             color: inherit;
-            width: auto
+            width: auto;
+            height: 35px;
+            max-height: 35px;
         }
         .filter-input[disabled] {
             background-color: transparent;
@@ -140,7 +150,7 @@
     </style>
 </head>
 <body>
-    <div class="d-flex justify-space-between table-top-actions">
+    <div class="table-top-actions">
         <div class="paging_length">
             <!-- Page Length Select -->
             <label for="page-length">Show</label>
@@ -154,11 +164,11 @@
             </select>
             <span>rows per page</span>
         </div>
-        <div class="d-flex gap-10">
+        <div class="d-flex align-items-center gap-10">
             <!-- Global Search Input -->
-            <div class="d-flex gap-10">
+            
                 <input type="text" id="global-search" class="filter-input" placeholder="Search Table" aria-label="Search through the table">
-            </div>
+           
             <button id="refresh" class="btn btn-primary" aria-label="Refresh Table">Refresh</button>
             <button id="filter" class="btn btn-primary" aria-label="Filter Table">Filter</button>
         </div>
@@ -171,10 +181,10 @@
                     <th class="sortable" data-column="name">Name</th>
                     <th class="sortable" data-column="age">Age</th>
                 </tr>
-                <tr id="filter-row">
-                    <th><input type="text" id="filter-id" class="filter-input" placeholder="Filter by ID"></th>
-                    <th><input type="text" id="filter-name" class="filter-input" placeholder="Filter by Name"></th>
-                    <th><input type="text" id="filter-age" class="filter-input" placeholder="Filter by Age"></th>
+                <tr id="filter-row" class="filter-row">
+                    <th class="th"><input type="text" id="filter-id" class="filter-input" placeholder="Filter by ID"></th>
+                    <th class="th"><input type="text" id="filter-name" class="filter-input" placeholder="Filter by Name"></th>
+                    <th class="th"><input type="text" id="filter-age" class="filter-input" placeholder="Filter by Age"></th>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -186,6 +196,8 @@
         <div id="page-number"></div>
         <button id="next" aria-label="Next page">Next</button>
     </div>
+
+
 
     <script>
         $(document).ready(function () {
@@ -372,35 +384,72 @@
 
             // Function to filter the table based on input values
             function filterTable() {
-                const filterId = $('#filter-id').val().toLowerCase();
-                const filterName = $('#filter-name').val().toLowerCase();
-                const filterAge = $('#filter-age').val().toLowerCase();
+                $('#filter-row input').on('keyup', function (e) {
+                    var code = e.keyCode || e.which;
+                    if (code === 9) return;  // Ignore tab key
+
+                    var $input = $(this);
+                    var inputContent = $input.val().toLowerCase().trim();  // Trim whitespace
+                    var $table = $input.closest('.table');
+                    var column = $input.closest('th').index();  // Get the column index correctly
+                    var $rows = $table.find('tbody tr');
+
+                    // Filter rows based on the current column
+                    var $filteredRows = $rows.filter(function () {
+                        var value = $(this).find('td').eq(column).text().toLowerCase().trim();  // Trim and normalize
+                        return value.indexOf(inputContent) === -1;
+                    });
+
+                    // Remove any previous no-result rows
+                    $table.find('tbody .no-result').remove();
+
+                    // Show all rows first, then hide the filtered ones
+                    $rows.show();
+                    $filteredRows.hide();
+
+                    // If all rows are filtered, show a 'No result found' message
+                    if ($filteredRows.length === $rows.length) {
+                        var colspan = $table.find('.filters th').length;  // Ensure colspan matches the number of columns
+                        var noResultRow = $('<tr class="no-result text-center"><td colspan="' + colspan + '">No result found</td></tr>');
+                        $table.find('tbody').prepend(noResultRow);
+                    } 
+                });
+            }
+
+
+
+            //function filterTable() {
+            //    const filterId = $('#filter-id').val().toLowerCase();
+            //    const filterName = $('#filter-name').val().toLowerCase();
+            //    const filterAge = $('#filter-age').val().toLowerCase();
 
                 
-                // Reset filteredData to the original data if all filter fields are empty
-                if (filterId === '' && filterName === '' && filterAge === '') {
-                    $('#filter-id').val('');
-                    filteredData = [...data] // Show all data if no filter is applied
-                    $('#refresh').click();
-                } else {
-                    // Filter data
-                    filteredData = data.filter(item => {
-                        // Check if each column value matches the filter input or if the filter input is empty
-                        const matchesId = filterId === '' || item.id.toString().includes(filterId);
-                        const matchesName = filterName === '' || item.name.toLowerCase().includes(filterName);
-                        const matchesAge = filterAge === '' || item.age.toString().includes(filterAge);
+            //    // Reset filteredData to the original data if all filter fields are empty
+            //    if (filterId === '' && filterName === '' && filterAge === '') {
+            //        $('#filter-id').val('');
+            //        filteredData = [...data] // Show all data if no filter is applied
+            //        $('#refresh').click();
+            //    } else {
+            //        // Filter data
+            //        filteredData = data.filter(item => {
+            //            // Check if each column value matches the filter input or if the filter input is empty
+            //            const matchesId = filterId === '' || item.id.toString().includes(filterId);
+            //            const matchesName = filterName === '' || item.name.toLowerCase().includes(filterName);
+            //            const matchesAge = filterAge === '' || item.age.toString().includes(filterAge);
 
-                        // Only include the item if all column filters match (or are empty)
-                        return matchesId && matchesName && matchesAge;
-                    });
-                }
+            //            // Only include the item if all column filters match (or are empty)
+            //            return matchesId && matchesName && matchesAge;
+            //        });
+            //    }
 
-                // Reset to the first page when filters change
-                currentPage = 1;
+            //    // Reset to the first page when filters change
+            //    currentPage = 1;
 
-                // Display updated data
-                displayData();
-            }
+            //    // Display updated data
+            //    displayData();
+            //}
+
+
 
             $('#filter-row').hide();
             $('#normal-row').show();
@@ -420,12 +469,19 @@
             // Event listener for refresh button
             $('#refresh').click(function () {
                 // Reset filters and data
-                $('#filter-id').val('');
-                $('#filter-name').val('');
-                $('#filter-age').val('');
-                filteredData = [...data]; // Reset to original data
-                currentPage = 1; // Reset to the first page
-                displayData(); // Re-render the table with original data
+                $('[class^= "top"]').val('');
+                //$('#filter-id').val('');
+                //$('#filter-name').val('');
+                //$('#filter-age').val('');
+                 filteredData = [...data]; // Reset to original data
+                 currentPage = 1; // Reset to the first page
+                 displayData(); // Re-render the table with original data
+
+                //$('.custom_loader').show(); 
+                //window.location.reload(true);
+                //setTimeout(function () {
+                //    $('.custom_loader').hide();
+                //}, 200);
             });
             // Event listener for global search input
             $('#global-search').on('input', function () {

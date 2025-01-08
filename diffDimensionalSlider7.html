@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Vertical Texts with Links and Images</title>
+    <style>
+        .text-container {
+            display: flex;
+            flex-direction: column; /* Arrange text vertically */
+            gap: 15px;
+            padding: 20px;
+            font-size: 18px;
+            opacity: 0;
+            animation: fadeIn 2s forwards; /* Fade in for the whole container */
+        }
+
+            .text-container span {
+                opacity: 0;
+                animation: slideIn 1s forwards;
+                visibility: hidden;
+            }
+
+        /* Fade-in animation for the whole container */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* Slide-in animation for each text */
+        @keyframes slideIn {
+            0% {
+                transform: translateY(-50px); /* Start from above */
+                opacity: 0;
+                visibility: visible;
+            }
+
+            100% {
+                transform: translateY(0); /* Move to the final position */
+                opacity: 1;
+                visibility: visible;
+            }
+        }
+
+        .image {
+            width: 150px; /* Set image width */
+            height: auto;
+            border: 1px solid #ccc; /* Optional: Add border to images */
+        }
+
+        a {
+            text-decoration: none;
+            color: blue;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="textContainer" class="text-container"></div>
+
+ <script type="text/javascript">
+     // Array containing text, links, and images
+     const items = [
+         { type: 'text', content: 'Hello' },
+         { type: 'link', content: 'Click Here', url: 'https://example.com' },
+         { type: 'image', content: 'Image', url: 'https://via.placeholder.com/150' }, // Added image URL and size
+         { type: 'text', content: 'World' },
+         { type: 'link', content: 'Another Link', url: 'https://example2.com' },
+         { type: 'image', content: 'Another Image', url: 'https://via.placeholder.com/150' }, // Another image
+         { type: 'text', content: 'JavaScript' }
+     ];
+
+     // Function to load and animate texts, links, and images vertically
+     function loadItemsVertically() {
+         const container = document.getElementById('textContainer');
+
+         items.forEach((item, index) => {
+             let element;
+
+             // Create text element
+             if (item.type === 'text') {
+                 element = document.createElement('span');
+                 element.textContent = item.content;
+             }
+             // Create link element
+             else if (item.type === 'link') {
+                 element = document.createElement('a');
+                 element.textContent = item.content;
+                 element.href = item.url;
+                 element.target = '_blank'; // Open link in new tab
+             }
+             // Create image element
+             else if (item.type === 'image') {
+                 element = document.createElement('img');
+                 element.src = item.url;
+                 element.alt = item.content;
+                 element.classList.add('image'); // Apply image class for size control
+             }
+
+             // Set the animation delay to stagger the appearance
+             element.style.animationDelay = `${index * 0.5}s`;
+
+             // Append the created element to the container
+             container.appendChild(element);
+         });
+     }
+
+     // Call the function to load items
+     loadItemsVertically();
+
+ </script>
+</body>
+</html>

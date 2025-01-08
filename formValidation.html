@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modular Form Validation</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14px;
+        }
+
+        .error {
+            color: red;
+            font-size: 12px;
+            z-index: 99;
+            position: absolute;
+            bottom: -15px;
+            right: 0;
+        }
+
+        label {
+            width: 230px;
+        }
+
+        .d-flex {
+            width: 300px;
+            display: flex;
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .gap-10 {
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Registration Form</h2>
+    <form id="registrationForm">
+        <div class="d-flex">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username">
+            <span id="usernameError" class="error"></span>
+        </div>
+        <div class="d-flex">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email">
+            <span id="emailError" class="error"></span>
+        </div>
+        <div class="d-flex">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password">
+            <span id="passwordError" class="error"></span>
+        </div>
+        <div class="d-flex">
+            <label for="confirmPassword">Confirm Password:</label>
+            <input type="password" id="confirmPassword" name="confirmPassword">
+            <span id="confirmPasswordError" class="error"></span>
+        </div>
+        <div class="d-flex gap-10">
+            <input type="submit" value="Submit">
+            <input type="button" value="Edit" id="edit">
+        </div>
+
+        <h3>Stored Data</h3>
+        <div>
+            <p>Username: <span id="savedUsername"></span></p>
+            <p>Email: <span id="savedEmail"></span></p>
+        </div>
+    </form>
+
+    <script>
+        // Check if there's stored data when the page loads
+        window.onload = function () {
+            var savedUsername = localStorage.getItem("username");
+            var savedEmail = localStorage.getItem("email");
+
+            if (savedUsername && savedEmail) {
+                document.getElementById("savedUsername").textContent = savedUsername;
+                document.getElementById("savedEmail").textContent = savedEmail;
+
+                // Populate the form fields with the stored data for editing
+                document.getElementById("username").value = savedUsername;
+                document.getElementById("email").value = savedEmail;
+            }
+        };
+
+        // Store data in localStorage
+        function localStore() {
+            const username = document.getElementById("username").value;
+            const email = document.getElementById("email").value;
+
+            // Save to localStorage
+            localStorage.setItem("username", username);
+            localStorage.setItem("email", email);
+
+            // Display saved data
+            document.getElementById("savedUsername").textContent = username;
+            document.getElementById("savedEmail").textContent = email;
+        }
+
+        // Reset form and clear error messages
+        function resetForm() {
+            document.getElementById("registrationForm").reset();
+            document.getElementById("usernameError").textContent = "";
+            document.getElementById("emailError").textContent = "";
+            document.getElementById("passwordError").textContent = "";
+            document.getElementById("confirmPasswordError").textContent = "";
+        }
+
+        // Form submission handling
+        document.getElementById("registrationForm").addEventListener("submit", function (event) {
+            event.preventDefault();  // Prevent form submission to handle validation
+            let isValid = true; // Reset the isValid variable
+
+            // Call validation functions
+            if (!validateUsername()) isValid = false;
+            if (!validateEmail()) isValid = false;
+            if (!validatePassword()) isValid = false;
+            if (!validateConfirmPassword()) isValid = false;
+
+            // If valid, submit the form (can be handled differently)
+            if (isValid) {
+                alert("Form submitted successfully!");
+                localStore();
+            }
+        });
+
+        // Username Validation
+        function validateUsername() {
+            const username = document.getElementById("username").value;
+            const usernameError = document.getElementById("usernameError");
+            if (username.trim() === "") {
+                usernameError.textContent = "Username is required!";
+                return false;
+            } else {
+                usernameError.textContent = "";
+                return true;
+            }
+        }
+
+        // Email Validation
+        function validateEmail() {
+            const email = document.getElementById("email").value;
+            const emailError = document.getElementById("emailError");
+            const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+            if (email.trim() === "") {
+                emailError.textContent = "Email is required!";
+                return false;
+            } else if (!emailPattern.test(email)) {
+                emailError.textContent = "Enter a valid email address!";
+                return false;
+            } else {
+                emailError.textContent = "";
+                return true;
+            }
+        }
+
+        // Password Validation (allows special characters like !, @, #, $, %, &, etc.)
+        function validatePassword() {
+            const password = document.getElementById("password").value;
+            const passwordError = document.getElementById("passwordError");
+            const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,20}$/;
+
+            if (password.trim() === "") {
+                passwordError.textContent = "Password is required!";
+                return false;
+            } else if (!passwordPattern.test(password)) {
+                passwordError.textContent = "Password must have 6-20 characters and include at least one letter, one number, and one special character.";
+                return false;
+            } else {
+                passwordError.textContent = "";
+                return true;
+            }
+        }
+
+        // Confirm Password Validation
+        function validateConfirmPassword() {
+            const password = document.getElementById("password").value;
+            const confirmPassword = document.getElementById("confirmPassword").value;
+            const confirmPasswordError = document.getElementById("confirmPasswordError");
+            if (confirmPassword.trim() === "") {
+                confirmPasswordError.textContent = "Please confirm your password!";
+                return false;
+            } else if (confirmPassword !== password) {
+                confirmPasswordError.textContent = "Passwords do not match!";
+                return false;
+            } else {
+                confirmPasswordError.textContent = "";
+                return true;
+            }
+        }
+
+        // Handle "Edit" button click to populate the form fields with saved data
+        document.getElementById("edit").addEventListener("click", function () {
+            // Populate the form fields with stored values
+            const savedUsername = localStorage.getItem("username");
+            const savedEmail = localStorage.getItem("email");
+
+            if (savedUsername && savedEmail) {
+                document.getElementById("username").value = savedUsername;
+                document.getElementById("email").value = savedEmail;
+            }
+
+            newUseraname = prompt("username", savedUsername);
+            newEmail = prompt("email", savedEmail);
+            updatePost(newUseraname, newEmail); 
+        });
+
+        function updatePost(newUseraname, newEmail) {
+            document.getElementById("username").value = newUseraname;
+            document.getElementById("email").value = newEmail;
+        }
+    </script>
+</body>
+</html>

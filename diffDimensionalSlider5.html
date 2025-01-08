@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiple Horizontal Text Animations</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            padding: 0;
+            background-color: #333;
+        }
+
+        .image-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+
+            .image-container img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+        .moving-text {
+            position: absolute;
+            top: 50%;
+            left: 100%;
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+            white-space: nowrap;
+            transform: translateY(-50%);
+            animation: moveText 10s linear infinite;
+        }
+
+            .moving-text:nth-child(odd) {
+                font-size: 2.5rem; /* Larger text for odd elements */
+                color: #ff6347; /* Tomato color */
+                animation-duration: 8s; /* Faster animation for odd elements */
+            }
+
+            .moving-text:nth-child(even) {
+                font-size: 1.8rem; /* Smaller text for even elements */
+                color: #32cd32; /* Lime green */
+                animation-duration: 12s; /* Slower animation for even elements */
+            }
+
+        @keyframes moveText {
+            0% {
+                left: 100%;
+            }
+
+            100% {
+                left: -100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="image-container"> 
+        <div class="moving-text">First piece of text</div>
+        <div class="moving-text">Second text moving across</div>
+        <div class="moving-text">Here is another text</div>
+        <div class="moving-text">Another scrolling message!</div>
+        <div class="moving-text">Keep watching the moving text</div>
+    </div>
+
+    <script>
+    // Dynamically add more text using JavaScript if needed
+    const container = document.querySelector('.image-container');
+    const newText = document.createElement('div');
+    newText.classList.add('moving-text');
+    newText.textContent = 'Dynamically added text!';
+    container.appendChild(newText);
+    </script>
+
+</body>
+</html>

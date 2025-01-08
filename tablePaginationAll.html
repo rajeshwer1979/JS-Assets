@@ -198,13 +198,17 @@
             // Function to fetch data from API
             function fetchData() {
                 $.ajax({
-                    url: apiUrl, // API endpoint
+                    url: apiUrl,
                     method: 'GET',
                     success: function (response) {
-                        data = response;  // Store the data
+                        data = response.map(item => ({
+                            id: item.id,
+                            name: item.title,  // Mapping API title to name
+                            age: item.body.length // Mapping API body length to age for example
+                        }));
                         filteredData = [...data]; // Initially, no filter applied
                         totalPages = Math.ceil(filteredData.length / itemsPerPage);
-                        displayData();  // Display data once it is fetched
+                        displayData();
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
                         console.error("Request failed:", textStatus, errorThrown);

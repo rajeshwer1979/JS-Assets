@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Different Dimensional Image Slider</title>
+<style type="text/css">
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+
+    .slider-container {
+        width: 80%;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .slider {
+        display: flex;
+        transition: transform 1s ease;
+    }
+
+    .slider-image {
+        width: 20%;
+        height: auto;
+        object-fit: cover;
+        transition: all 0.5s ease;
+        transform-origin: center;
+    }
+
+        .slider-image:nth-child(odd) {
+            transform: scale(1.2);
+            opacity: 0.8;
+        }
+
+        .slider-image:nth-child(even) {
+            transform: scale(0.8);
+            opacity: 0.8;
+        }
+
+    .slider-container:hover .slider-image {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+</style>
+</head>
+<body>
+    <div class="slider-container">
+        <div class="slider">
+            <img src="images/1.jpg" alt="Image 1" class="slider-image">
+            <img src="images/2.jpg" alt="Image 2" class="slider-image">
+            <img src="images/3.jpg" alt="Image 3" class="slider-image">
+            <img src="images/4.jpg" alt="Image 4" class="slider-image">
+        </div>
+    </div>
+
+<script type="text/javascript">
+
+    const images = document.querySelectorAll('.slider-image');
+    let currentIndex = 0;
+
+    function moveSlider() {
+        // Adjust the slider's position based on the index
+        const newTransformValue = `translateX(-${currentIndex * 20}%)`;
+        document.querySelector('.slider').style.transform = newTransformValue;
+    }
+
+    function nextImage() {
+        // Move to the next image, wrapping around if necessary
+        currentIndex = (currentIndex + 1) % images.length;
+        moveSlider();
+    }
+
+    function prevImage() {
+        // Move to the previous image, wrapping around if necessary
+        currentIndex = (currentIndex - 1 + images.length) % images.length;
+        moveSlider();
+    }
+
+    // Optionally, auto-slide after a set time interval
+    setInterval(nextImage, 3000);
+
+    // Adding event listeners for manual navigation
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'ArrowRight') {
+            nextImage();
+        } else if (event.key === 'ArrowLeft') {
+            prevImage();
+        }
+    });
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Load Texts Horizontally</title>
+    <style>
+        body {
+            transition: all ease 0.3s;
+        }
+        .text-container {
+            display: flex;
+            gap: 10px;
+            padding: 0px;
+            font-size: 18px;
+            opacity: 0;
+            overflow:hidden;
+            animation: fadeIn 2s forwards; /* Fade in for the whole container */
+            flex-direction: column; /* Arrange text vertically */
+        }
+
+         
+
+        /* Fade-in animation for the whole container */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* Slide-in animation for each text */
+        @keyframes slideIn {
+            0% {
+                transform: translateY(-50px);
+                opacity: 0;
+                visibility: visible;
+            }
+
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+                visibility: visible;
+            }
+        }
+        .img-block:before {
+            border-left: 3px solid #ff6a00;
+            content: '';
+            height: 100px;
+            position: absolute;
+            left: 29px;
+            top:0;
+            z-index: -1;
+        }
+            .img-block:last-child {
+                margin-bottom:0;
+            }
+            .img-block:before:last-child{
+                    bottom:0;
+            }
+
+            .img-block:before {
+                border-left: 3px solid #d5d5d5;
+            }
+            .img-block {
+            position:relative;
+            z-index:1;
+            opacity: 0;
+            animation: slideIn 1s forwards;
+            visibility: hidden;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            margin: 10px; 
+            border: 1px solid #d5d5d5;
+            padding: 10px;
+            border-radius: 10px;
+        }
+                .img-block:hover {
+                    background-color:#d5d5d5 !important;
+                }
+                    .img-block:hover img {
+                        box-shadow: 0px 0px 0px 2px #8b8b8b;
+                        transition: all ease 0.3s;
+                        transform: scale(1.1);
+                        filter: grayscale(100%);
+                    }
+
+                    .img-block span{
+                color:#333333;
+                order:2;
+                margin-left:10px;
+            }
+
+            .img-block img {
+                width: 40px;
+                height: 40px;
+                border-radius: 100%;
+            }
+    </style>
+</head>
+<body>
+
+    <div id="textContainer" class="text-container">
+        <div class="text-container-line"></div>
+
+    </div>
+
+     <script type="text/javascript">
+         // Array containing text, links, images with relevant URLs
+         const items = [
+             {
+                 type: 'text-image',
+                 text: 'Hello',
+                 imageUrl: 'https://cdn.pixabay.com/photo/2017/01/14/10/56/people-1979261_1280.jpg',
+                 link: 'https://techwave.net/'
+             },
+             {
+                 type: 'text-image',
+                 text: 'Click Here',
+                 imageUrl: 'https://cdn.pixabay.com/photo/2016/03/26/23/23/starbucks-1281880_1280.jpg',
+                 url: 'https://techwave.net/'
+             },
+             {
+                 type: 'text-image',
+                 text: 'World',
+                 imageUrl: 'https://cdn.pixabay.com/photo/2015/05/31/13/45/working-791849_1280.jpg',
+                 link: 'https://techwave.net/'
+             },
+             {
+                 type: 'text-image',
+                 text: 'JavaScript',
+                 imageUrl: 'https://cdn.pixabay.com/photo/2016/11/22/21/26/notebook-1850613_1280.jpg',
+                 link: 'https://techwave.net/'
+             }, ,
+             {
+                 type: 'text-image',
+                 text: '.Net',
+                 imageUrl: 'https://cdn.pixabay.com/photo/2017/06/09/07/37/notebook-2386034_1280.jpg',
+                 link: 'https://techwave.net/'
+             },
+             //{
+             //    type: 'link',
+             //    content: 'Link Click Here',
+             //    url: 'https://techwave.net/'
+             //},
+         ];
+
+         // Function to load and animate texts, images with links vertically
+         function loadItemsVertically() {
+             const container = document.getElementById('textContainer');
+
+             items.forEach((item, index) => {
+                 let element;
+
+                 // If item type is 'text-image', create a combination of text and image wrapped in a link
+                 if (item.type === 'text-image') {
+                     const linkElement = document.createElement('a');
+                     linkElement.className = 'img-block';
+                     linkElement.href = item.link;
+                     linkElement.target = '_blank'; // Open link in a new tab
+
+                     // Create text element
+                     const textElement = document.createElement('span');
+                     textElement.textContent = item.text;
+
+                     // Create image element
+                     const imgElement = document.createElement('img');
+                     imgElement.src = item.imageUrl;
+                     imgElement.alt = item.text;
+                     imgElement.classList.add('image'); // Apply image class for size control
+
+                     // Append text and image inside the link
+                     linkElement.appendChild(textElement);
+                     linkElement.appendChild(imgElement);
+                     element = linkElement; // Set the whole link as the element
+                 }
+                 // Create link element (for non 'text-image' types)
+                 else if (item.type === 'link') {
+                     element = document.createElement('a');
+                     element.textContent = item.content;
+                     element.href = item.url;
+                     element.target = '_blank'; // Open link in new tab
+                 }
+
+                 // Set the animation delay to stagger the appearance
+                 element.style.animationDelay = `${index * 0.5}s`;
+
+                 // Append the created element to the container
+                 container.appendChild(element);
+             });
+         }
+
+         // Call the function to load items
+         loadItemsVertically();
+
+         function getRandomColor() {
+             // Generate random values for red, green, and blue, but keep them within the light range (around 200-255)
+             const r = Math.floor(Math.random() * 56) + 200;  // 200-255 range
+             const g = Math.floor(Math.random() * 56) + 200;  // 200-255 range
+             const b = Math.floor(Math.random() * 56) + 200;  // 200-255 range
+
+             // Convert RGB to hexadecimal
+             const randomColor = `rgb(${r}, ${g}, ${b})`;
+             return randomColor;
+         } 
+
+         // Get all elements with the class 'img-block'
+         const imgbgColor = document.getElementsByClassName('img-block'); 
+
+         // Loop through all matched elements and apply a random background color
+         for (let i = 0; i < imgbgColor.length; i++) {
+             imgbgColor[i].style.backgroundColor = getRandomColor();
+         }
+
+       
+
+
+     </script>
+</body>
+</html>
