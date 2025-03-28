@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto-Animated Tree View</title>
+<style type="text/css">
+    /* styles.css */
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f5f5f5;
+        margin: 0;
+        padding: 20px;
+        color: #333;
+        display: flex;
+        justify-content: center;
+        min-height: 100vh;
+    }
+
+    .tree-container {
+        max-width: 100%;
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    ul.multiple-children {
+        border-top: 1px solid #d5d5d5;
+    }
+
+    h1 {
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 30px;
+    }
+
+    .tree {
+        list-style-type: none;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+        .tree ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 15px 0;
+            overflow: hidden;
+            max-height: 0;
+            opacity: 0;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            transition: max-height 0.5s ease-out, opacity 0.5s ease-out;
+        }
+
+        .tree li {
+            position: relative;
+            margin: 8px 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            align-self:baseline; 
+        }
+
+    .tree-node, .tree-leaf {
+        padding: 12px 10px;
+        border-radius: 6px;
+        transform: translateY(-20px);
+        opacity: 0;
+        transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+        text-align: center;
+        margin: 5px 0;
+        position: relative; 
+    }
+
+    .tree-node {
+        background-color: #3498db;
+        color: white;
+        font-weight: bold;
+        min-width: 100px;
+    }
+
+    .tree-leaf {
+        background-color: #ecf0f1;
+        color: #34495e;
+        min-width: 80px;
+    }
+
+    /* Connector lines - vertical only */
+    .tree li:not(:only-child)::before {
+        content: '';
+        position: absolute;
+        top: -15px;
+        left: 50%;
+        width: 1px;
+        height: 20px;
+        background-color: #95a5a6;
+        opacity: 0;
+        transition: opacity 0.5s ease-out 0.3s;
+    }
+
+    /* Horizontal connectors for multiple children */
+    .tree ul.multiple-children::before {
+        content: '';
+        position: absolute;
+        top: -8px;
+        left: 50%;
+        right: 50%;
+        height: 1px;
+        background-color: #95a5a6;
+        opacity: 0;
+        transition: opacity 0.5s ease-out 0.3s;
+    }
+
+    /* Animated states */
+    .tree ul.animated {
+        max-height: 1000px;
+        opacity: 1;
+    }
+
+    .tree-node.animated, .tree-leaf.animated {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    .tree li.animated::before,
+    .tree ul.animated.multiple-children::before {
+        opacity: 1;
+    }
+</style>
+</head>
+<body>
+    <div class="tree-container">
+        <h1>Auto-Animated Tree View</h1>
+        <ul class="tree">
+            <li>
+                <span class="tree-node">Root Node</span>
+                <ul>
+                    <li>
+                        <span class="tree-node">Branch 1</span>
+                        <ul>
+                            <li><span class="tree-leaf">Leaf 1.1</span></li>
+                            <li><span class="tree-leaf">Leaf 1.2</span></li>
+                            <li>
+                                <span class="tree-node">Branch 1.3</span>
+                                <ul class="tree-node-menu">
+                                    <li><span class="tree-leaf">Leaf 1.3.1</span></li>
+                                    <li><span class="tree-leaf">Leaf 1.3.2</span></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <span class="tree-node">Branch 2</span>
+                        <ul>
+                            <li><span class="tree-leaf">Leaf 2.1</span></li>
+                            <li><span class="tree-leaf">Leaf 2.2</span></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <span class="tree-node">Branch 3</span>
+                        <ul>
+                            <li><span class="tree-leaf">Leaf 3.1</span></li>
+                            <li>
+                                <span class="tree-node">Branch 3.2</span>
+                                <ul class="tree-node-menu">
+                                    <li><span class="tree-leaf">Leaf 3.2.1</span></li>
+                                    <li><span class="tree-leaf">Leaf 3.2.2</span></li>
+                                    <li><span class="tree-leaf">Leaf 3.2.3</span></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <script>
+        // script.js
+        document.addEventListener('DOMContentLoaded', function () {
+            // Mark ULs with multiple children
+            document.querySelectorAll('.tree ul').forEach(ul => {
+                if (ul.children.length > 1) {
+                    ul.classList.add('multiple-children');
+                }
+            });
+
+            // Function to animate tree nodes with delays
+            function animateTree() {
+                // Get all elements that need animation
+                const allNodes = document.querySelectorAll('.tree-node, .tree-leaf');
+                const allULs = document.querySelectorAll('.tree ul');
+                const allLIs = document.querySelectorAll('.tree li');
+
+                // Animate the root node first
+                const rootNode = document.querySelector('.tree > li > .tree-node');
+                if (rootNode) {
+                    setTimeout(() => {
+                        rootNode.classList.add('animated');
+                    }, 300);
+                }
+
+                // Animate ULs (containers) with increasing delay based on depth
+                allULs.forEach(ul => {
+                    const depth = getDepth(ul);
+                    setTimeout(() => {
+                        ul.classList.add('animated');
+                    }, 500 + (depth * 300));
+                });
+
+                // Animate LIs (connector lines) with increasing delay based on depth
+                allLIs.forEach(li => {
+                    const depth = getDepth(li);
+                    setTimeout(() => {
+                        li.classList.add('animated');
+                    }, 600 + (depth * 300));
+                });
+
+                // Animate individual nodes with increasing delay based on depth
+                allNodes.forEach(node => {
+                    const depth = getDepth(node);
+                    setTimeout(() => {
+                        node.classList.add('animated');
+                    }, 700 + (depth * 300));
+                });
+            }
+
+            // Helper function to calculate depth in the tree
+            function getDepth(element) {
+                let depth = 0;
+                let parent = element.parentElement;
+
+                while (parent && !parent.classList.contains('tree-container')) {
+                    if (parent.tagName === 'UL' || parent.tagName === 'LI') {
+                        depth++;
+                    }
+                    parent = parent.parentElement;
+                }
+
+                return depth;
+            }
+
+            // Start the animation
+            setTimeout(animateTree, 500);
+        });
+    </script>
+
+    </body>
+</html>
