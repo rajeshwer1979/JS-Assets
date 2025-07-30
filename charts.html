@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="UnfoldLabs EMM">
+    <meta name="author" content="UnfoldLabs EMM">
+    <meta name="generator" content="V 1.0">
+    <meta property="og:title" content="Google">
+    <meta property="og:description" content="Google Enrollment">
+    <meta property="og:image" content="https://www.google.com/webhp?hl=en&sa=X&ved=0ahUKEwjnlrm9nPiNAxW1XGwGHQu2IKwQPAgI">
+    <meta property="og:url" content="https://www.google.com/">
+    <meta property="twitter:title" content="Google">
+    <meta property="twitter:description" content="Google Enrollment">
+    <meta property="twitter:image" content="https://www.google.com/webhp?hl=en&sa=X&ved=0ahUKEwjnlrm9nPiNAxW1XGwGHQu2IKwQPAgI">
+    <meta property="twitter:url" content="https://www.google.com/">
+    <title> Share Media </title>
+<!--    <link rel="apple-touch-icon" sizes="180x180" href="assets/images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon-16x16.png">-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="row">
+        <div class="col-sm-12 col-md-6">
+            <canvas id="myVerticalBarChart" style="width: 500px; max-width: 600px; height: 400px;  "></canvas>
+        </div>
+
+        <div class="col-sm-12 col-md-6">
+            <canvas id="myDoughnutChart" style="width: 500px; height: 400px; "></canvas>
+        </div>
+
+        <!--<div class="col-sm-12 col-md-6">
+            <div class="main-title-chart"><span>Devices By Carrier</span> <select class="form-select form-select-sm fsw_100"><option>Actions</option><option selected>Android</option><option>iOS</option></select></div>
+            <div style="height: 85%; margin: 0 auto; width: fit-content;" ">
+                <canvas id="myVerticalBarChart" style="width:100%;max-width:600px; height:100%; max-height:400px;"></canvas>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6">
+            <div class="main-title-chart"><span>Managed By Platform</span> <select class="form-select form-select-sm fsw_100"><option>Actions</option><option selected>Android</option><option>iOS</option></select></div>
+            <div style="height: 90%; margin: 0 auto; width: fit-content;">
+                <canvas id="myDoughnutChart" style="width:100%;max-width:600px; height:100%; max-height:400px;"></canvas>
+            </div>
+        </div>-->
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script> 
+    <script> 
+        /*---- chart js----*/  
+
+        // Create the vertical bar chart
+        const ctxv = document.getElementById('myVerticalBarChart').getContext('2d');
+        var myDoughnut = new Chart(ctxv, {
+            type: 'bar',
+            data: {
+                labels: ['Jio', 'VI', 'Airtel', 'BSNL'],
+                datasets: [{
+                    label: 'Managed By Platform',
+                    data: [300, 50, 100, 150],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 205, 86, 1)',
+                        'rgba(189, 149, 255, 1)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(189, 149, 255, 1)'
+                    ],
+                    borderWidth: 1,
+                    hoverOffset: 4,
+
+                }]
+            },
+            options: {
+                indexAxis: 'x', // Make it horizontal
+                responsive: true,
+                scales: {
+                    x: {
+                        ticks: {
+                            font: {
+                                size: 10 // Decrease X-axis label font size
+                            }
+                        },
+                    },
+                    y: {
+                        ticks: {
+                            font: {
+                                size: 10 // Decrease Y-axis label font size
+                            }
+                        },
+                    },
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    datalabels: {
+                        anchor: 'end',        // Position at end of bar
+                        align: 'top',         // Align to top of bar
+                        offset: -20,            // No additional offset
+                        color: '#ffffff',        // Dark gray text color
+                        font: {
+                            weight: '500',   // Bold font
+                            size: 10         // Font size
+                        },
+                        formatter: function (value, context) {
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            return Math.round((value / total) * 100) + '%';
+                        }
+                    }
+                }
+            },
+            plugins: [ChartDataLabels] // Include this if using datalabels plugin
+        });
+
+        /*------myDoughnutChart----- */
+        var ctxdn = document.getElementById('myDoughnutChart').getContext('2d');
+        var myDoughnut = new Chart(ctxdn, {
+            type: 'line',
+            data: {
+                labels: [
+                    'V 1.5 (Cupcake)',
+                    'V 1.6 (Donut)',
+                    'V 2.0-2.1 (Eclair)',
+                    'V 2.2 (Froyo)',
+                    'V 2.3 (Gingerbread)',
+                    'V 4.0 (Ice Cream Sandwich)',
+                    'V 4.1-4.3 (Jelly Bean)',
+                    'V 4.4 (KitKat)',
+                    'V 5 (Lollipop)',
+                    'V 6 (Marshmallow)',
+                    'V 7 (Nougat)',
+                    'V 8 (Oreo)',
+                    'V 9 (Pie)',
+                    'V 10',
+                    'V 11',
+                    'V 12 (12L)',
+                    'V 13',
+                    'V 14'
+                ],
+                datasets: [{
+                    label: 'Managed By Platform',
+                    data: [300, 50, 100, 150, 200, 300, 2000, 500, 600, 700, 800, 900, 1000, 800, 600, 1400, 500, 100],
+                    backgroundColor: [
+                        'rgb(255, 99, 132, 1)',
+                        'rgb(54, 162, 235, 1)',
+                        'rgb(255, 205, 86, 1)',
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(199, 199, 199, 1)',
+                        'rgba(83, 102, 255, 1)',
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 205, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(199, 199, 199, 1)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(199, 199, 199, 1)',
+                        'rgba(83, 102, 255, 1)',
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(199, 199, 199, 1)',
+                        'rgba(83, 102, 255, 1)',
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)'
+                    ],
+                    borderWidth: 1,
+                    hoverOffset: 0,
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        ticks: {
+                            font: {
+                                size: 10 // Decrease X-axis label font size
+                            }
+                        },
+                    },
+                    y: {
+                        ticks: {
+                            font: {
+                                size: 10 // Decrease Y-axis label font size
+                            }
+                        },
+                    },
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                var total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                var percentage = ((context.raw / total) * 100).toFixed(2);
+                                return `${context.label}: ${context.raw} (${percentage}%)`;
+                            }
+                        }
+                    },
+                    // For Chart.js v3+, use datalabels plugin instead of built-in labels
+                    datalabels: {
+                        anchor: 'end',        // Position at end of bar
+                        align: 'bottom',         // Align to top of bar
+                        offset: 0,            // No additional offset
+                        color: '#333',        // Dark gray text color
+                        font: {
+                            weight: '500',   // Bold font
+                            size: 10         // Font size
+                        },
+                        formatter: function (value, context) {
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            return Math.round((value / total) * 100) + '%';
+                        }
+                    }
+                }
+            },
+            plugins: [ChartDataLabels] // Include this if using datalabels plugin
+        });
+    </script>
+
+</body>
+</html>

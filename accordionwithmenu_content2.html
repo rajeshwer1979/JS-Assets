@@ -1,0 +1,291 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sidebar Menu with Active States</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+        }
+        
+        .sidebar {
+            width: 250px;
+            background: #2c3e50;
+            color: white;
+            transition: all 0.3s;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .sidebar-header {
+            padding: 20px;
+            background: #1a252f;
+            position: relative;
+        }
+        
+        .sidebar-menu {
+            padding: 0;
+            list-style: none;
+        }
+        
+        .menu-item {
+            position: relative;
+        }
+        
+        .menu-item a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: #ecf0f1;
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+        
+        .menu-item a:hover {
+            background: #34495e;
+            border-left: 3px solid #3498db;
+        }
+        
+        .menu-item.active > a {
+            background: #34495e;
+            border-left: 3px solid #3498db;
+            color: #fff;
+        }
+        
+        .menu-item.active > a .menu-icon {
+            color: #3498db;
+        }
+        
+        .submenu {
+            list-style: none;
+            padding-left: 0;
+            display: none;
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        .submenu.show {
+            display: block;
+        }
+        
+        .submenu .menu-item a {
+            padding-left: 50px;
+        }
+        
+        .submenu .menu-item.active a {
+            background: rgba(52, 152, 219, 0.2);
+        }
+        
+        .menu-icon {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .menu-text {
+            flex: 1;
+        }
+        
+        .menu-toggle {
+            transition: transform 0.3s;
+        }
+        
+        .menu-item.active .menu-toggle {
+            transform: rotate(180deg);
+        }
+        
+        .toggle-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 20px;
+        }
+        
+        .content-area {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h3>Menu System</h3>
+            <button class="toggle-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        <ul class="sidebar-menu">
+            <li class="menu-item">
+                <a href="#dashboard" class="menu-link">
+                    <i class="fas fa-tachometer-alt menu-icon"></i>
+                    <span class="menu-text">Dashboard</span>
+                </a>
+            </li>
+            <li class="menu-item has-submenu">
+                <a href="#products" class="menu-link">
+                    <i class="fas fa-box-open menu-icon"></i>
+                    <span class="menu-text">Products</span>
+                    <i class="fas fa-chevron-down menu-toggle"></i>
+                </a>
+                <ul class="submenu">
+                    <li class="menu-item">
+                        <a href="#products/list" class="menu-link">
+                            <i class="fas fa-list menu-icon"></i>
+                            <span class="menu-text">Product List</span>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#products/add" class="menu-link">
+                            <i class="fas fa-plus menu-icon"></i>
+                            <span class="menu-text">Add Product</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="menu-item has-submenu">
+                <a href="#orders" class="menu-link">
+                    <i class="fas fa-shopping-cart menu-icon"></i>
+                    <span class="menu-text">Orders</span>
+                    <i class="fas fa-chevron-down menu-toggle"></i>
+                </a>
+                <ul class="submenu">
+                    <li class="menu-item">
+                        <a href="#orders/list" class="menu-link">
+                            <i class="fas fa-list menu-icon"></i>
+                            <span class="menu-text">Order List</span>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#orders/pending" class="menu-link">
+                            <i class="fas fa-clock menu-icon"></i>
+                            <span class="menu-text">Pending Orders</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="menu-item">
+                <a href="#customers" class="menu-link">
+                    <i class="fas fa-users menu-icon"></i>
+                    <span class="menu-text">Customers</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    
+    <div class="main-content">
+        <div class="content-area">
+            <h2 id="content-title">Welcome</h2>
+            <div id="content-body">
+                <p>Select a menu item to view content.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Toggle sidebar collapse
+            $('.toggle-btn').click(function() {
+                $('.sidebar').toggleClass('collapsed');
+            });
+            
+            // Handle menu clicks
+            $('.menu-link').click(function(e) {
+                e.preventDefault();
+                
+                // Get the target page
+                var target = $(this).attr('href');
+                
+                // Update active states
+                $('.menu-item').removeClass('active');
+                $(this).parent().addClass('active');
+                
+                // If this is a parent menu item with submenu
+                if ($(this).parent().hasClass('has-submenu')) {
+                    // Toggle submenu
+                    $(this).next('.submenu').toggleClass('show');
+                    
+                    // Close other submenus
+                    $(this).parent().siblings().find('.submenu').removeClass('show');
+                    
+                    // Don't load content for parent items
+                    return;
+                }
+                
+                // Close all submenus when clicking a leaf item
+                $('.submenu').removeClass('show');
+                
+                // Load content
+                loadContent(target);
+            });
+            
+            // Function to load content
+            function loadContent(page) {
+                // Update title
+                var title = $('a[href="' + page + '"] .menu-text').text();
+                $('#content-title').text(title);
+                
+                // Show loading state
+                $('#content-body').html('<p><i class="fas fa-spinner fa-spin"></i> Loading content...</p>');
+                
+                // Simulate content loading
+                setTimeout(function() {
+                    var content = '<p>This is the content for <strong>' + title + '</strong>.</p>';
+                    content += '<p>Page: ' + page + '</p>';
+                    $('#content-body').html(content);
+                }, 300);
+            }
+            
+            // Initialize - check URL hash or load default
+            if (window.location.hash) {
+                var target = window.location.hash;
+                var $targetItem = $('.menu-link[href="' + target + '"]');
+                
+                if ($targetItem.length) {
+                    // Open parent submenus if needed
+                    $targetItem.parents('.has-submenu').each(function() {
+                        $(this).addClass('active');
+                        $(this).find('> a').next('.submenu').addClass('show');
+                    });
+                    
+                    // Activate the target item
+                    $targetItem.parent().addClass('active');
+                    loadContent(target);
+                } else {
+                    // Default to dashboard
+                    loadContent('#dashboard');
+                    $('.menu-link[href="#dashboard"]').parent().addClass('active');
+                }
+            } else {
+                // Default to dashboard
+                loadContent('#dashboard');
+                $('.menu-link[href="#dashboard"]').parent().addClass('active');
+            }
+        });
+    </script>
+</body>
+</html>

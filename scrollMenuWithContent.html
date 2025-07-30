@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scroll-Active Menu</title>
+    <link rel="stylesheet" href="styles.css">
+	<style>
+	body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #333;
+    z-index: 1000;
+}
+
+.menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.menu li {
+    margin: 0;
+}
+
+.menu a {
+    display: block;
+    padding: 1rem 2rem;
+    color: white;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.menu a:hover {
+    background-color: #555;
+}
+
+.menu a.active {
+    background-color: #4CAF50;
+}
+
+.section {
+    min-height: 100vh;
+    padding: 4rem 2rem 2rem;
+    box-sizing: border-box;
+}
+
+.section:nth-child(odd) {
+    background-color: #f4f4f4;
+}
+
+.section:nth-child(even) {
+    background-color: #ddd;
+}
+
+h2 {
+    margin-top: 0;
+}
+</style>
+</head>
+<body>
+    <nav class="menu">
+        <ul>
+            <li><a href="#section1" class="active">Section 1</a></li>
+            <li><a href="#section2">Section 2</a></li>
+            <li><a href="#section3">Section 3</a></li>
+            <li><a href="#section4">Section 4</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="section1" class="section">
+            <h2>Section 1</h2>
+            <p>Content for section 1...</p>
+        </section>
+        <section id="section2" class="section">
+            <h2>Section 2</h2>
+            <p>Content for section 2...</p>
+        </section>
+        <section id="section3" class="section">
+            <h2>Section 3</h2>
+            <p>Content for section 3...</p>
+        </section>
+        <section id="section4" class="section">
+            <h2>Section 4</h2>
+            <p>Content for section 4...</p>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+	<script>
+	document.addEventListener('DOMContentLoaded', function() {
+    const sections = document.querySelectorAll('.section');
+    const menuItems = document.querySelectorAll('.menu a');
+    
+    // Function to change active menu item
+    function changeActiveMenu() {
+        let index = sections.length;
+        
+        // Check which section is in view
+        while(--index && window.scrollY + 50 < sections[index].offsetTop) {}
+        
+        // Remove active class from all menu items
+        menuItems.forEach((item) => item.classList.remove('active'));
+        
+        // Add active class to corresponding menu item
+        menuItems[index].classList.add('active');
+    }
+    
+    // Set initial active menu item
+    changeActiveMenu();
+    
+    // Add scroll event listener
+    window.addEventListener('scroll', changeActiveMenu);
+    
+    // Smooth scrolling for menu clicks
+    menuItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            const targetSection = document.querySelector(targetId);
+            
+            window.scrollTo({
+                top: targetSection.offsetTop,
+                behavior: 'smooth'
+            });
+        });
+    });
+});
+	</script>
+</body>
+</html>

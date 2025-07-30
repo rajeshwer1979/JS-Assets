@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .pie-chart {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: conic-gradient(
+                var(--segment-colors)
+            );
+        }
+        
+        .chart-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin: 20px;
+        }
+        
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+        }
+        
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            border-radius: 3px;
+        }
+		.approvcolor{
+			width:15px;
+			height:15px;
+			  border-radius: 100px;
+			  display:inline-block;
+			background-color:#36a2eb;
+		}
+    </style>
+</head>
+<body>
+    <div class="chart-container">
+        <div class="pie-chart" style="
+            --segment-colors: 
+                #ff6384 0% 25%,
+                #36a2eb 25% 60%,
+                #ffce56 60% 100%;
+        "></div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: #ff6384;"></div>
+                <span>Red (25%)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #36a2eb;"></div>
+                <span>Blue (35%)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #ffce56;"></div>
+                <span>Yellow (40%)</span>
+            </div>
+        </div> 
+		
+    </div>
+	
+	<div class="">
+		Approved <span class="approvcolor">&nbsp;</span>
+	 </div>
+		
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sidebar Navigation with jQuery</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+        }
+        
+      .sidebar {
+  width: 250px;
+  background: #2c3e50;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+.tabaccordion-item {
+  border-bottom: 1px solid #34495e;
+}
+
+.tabaccordion-header {
+  padding: 15px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+.tabaccordion-header:hover {
+  background: #34495e;
+}
+
+.tabaccordion-header.active {
+  background: #1abc9c;
+}
+
+.tabaccordion-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+  background: #34495e;
+}
+
+.tabaccordion-content a {
+  display: block;
+  padding: 10px 15px;
+  color: #ecf0f1;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.tabaccordion-content a:hover {
+  background: #2c3e50;
+}
+    </style>
+</head>
+<body>
+      <div class="sidebar">
+  <div class="tabaccordion-item">
+    <div class="tabaccordion-header">Section 1</div>
+    <div class="tabaccordion-content">
+      <a href="#">Item 1</a>
+      <a href="#">Item 2</a>
+      <a href="#">Item 3</a>
+    </div>
+  </div>
+  
+  <div class="tabaccordion-item">
+    <div class="tabaccordion-header">Section 2</div>
+    <div class="tabaccordion-content">
+      <a href="#">Item 4</a>
+      <a href="#">Item 5</a>
+    </div>
+  </div>
+  
+  <div class="tabaccordion-item">
+    <div class="tabaccordion-header">Section 3</div>
+    <div class="tabaccordion-content">
+      <a href="#">Item 6</a>
+      <a href="#">Item 7</a>
+      <a href="#">Item 8</a>
+      <a href="#">Item 9</a>
+    </div>
+  </div>
+</div>
+
+<script>
+$(document).ready(function() {
+	  // Initialize - close all accordion items except first
+	  $('.tabaccordion-content').not(':first').css('max-height', '0');
+	  $('.tabaccordion-header:first').addClass('active');
+	  
+	  // Accordion functionality
+	  $('.tabaccordion-header').click(function() {
+	    // Toggle current item
+	    $(this).toggleClass('active');
+	    $(this).next('.tabaccordion-content').css('max-height', function() {
+	      return $(this).css('max-height') === '0px' ? $(this)[0].scrollHeight + 'px' : '0';
+	    });
+	    
+	    // Close other items
+	    $('.tabaccordion-header').not(this).removeClass('active');
+	    $('.tabaccordion-content').not($(this).next()).css('max-height', '0');
+	  });
+	  
+	  // Responsive behavior (optional)
+	  $(window).resize(function() {
+	    $('.tabaccordion-content').each(function() {
+	      if ($(this).css('max-height') !== '0px') {
+	        $(this).css('max-height', $(this)[0].scrollHeight + 'px');
+	      }
+	    });
+	  });
+	});
+	</script>
+</body>
+</html>

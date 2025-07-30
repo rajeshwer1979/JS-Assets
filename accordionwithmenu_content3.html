@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tab_sidebar Navigation with jQuery</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+        }
+        
+        .tab_sidebar {
+            width: 250px;
+            background: #2c3e50;
+            color: white;
+            transition: all 0.3s;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .tab_sidebar-header {
+            padding: 20px;
+            background: #1a252f;
+        }
+        
+        .tab_sidebar-menu {
+            padding: 0;
+            list-style: none;
+        }
+        
+        .tab_menu-item {
+            position: relative;
+        }
+        
+        .tab_menu-item a {
+            display: block;
+            padding: 15px 20px;
+            color: #ecf0f1;
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+        
+        .tab_menu-item a:hover {
+            background: #34495e;
+            border-left: 3px solid #3498db;
+        }
+        
+        .tab_menu-item.active > a {
+            background: #34495e;
+            border-left: 3px solid #3498db;
+        }
+        
+        .submenu {
+            list-style: none;
+            padding-left: 20px;
+            display: none;
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        .submenu.show {
+            display: block;
+        }
+        
+        .submenu .tab_menu-item a {
+            padding: 12px 20px;
+        }
+        
+        .menu-toggle {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            cursor: pointer;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        .content-area {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            min-height: calc(100vh - 40px);
+        }
+        
+        .collapsed {
+            width: 70px;
+            overflow: hidden;
+        }
+        
+        .collapsed .tab_menu-text {
+            display: none;
+        }
+        
+        .collapsed .menu-toggle {
+            display: none;
+        }
+        
+        .collapsed .submenu {
+            position: absolute;
+            left: 70px;
+            top: 0;
+            width: 200px;
+            display: none !important;
+            z-index: 1000;
+        }
+        
+        .collapsed .tab_menu-item:hover .submenu {
+            display: block !important;
+        }
+        
+        .tab_toggle-btn {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            background: #34495e;
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Previous HTML structure remains the same until content-area -->
+      <div class="tab_sidebar">
+        <div class="tab_sidebar-header">
+            <h3>Menu</h3>
+            <button class="tab_toggle-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        <ul class="tab_sidebar-menu">
+            <li class="tab_menu-item">
+                <a href="#dashboard" class="tab_menu-link">
+                    <i class="fas fa-tachometer-alt tab_menu-icon"></i>
+                    <span class="tab_menu-text">Dashboard</span>
+                </a>
+            </li>
+            <li class="tab_menu-item has-submenu">
+                <a href="#products" class="tab_menu-link">
+                    <i class="fas fa-box-open tab_menu-icon"></i>
+                    <span class="tab_menu-text">Products</span>
+                    <i class="fas fa-chevron-down menu-toggle"></i>
+                </a>
+                <ul class="submenu">
+                    <li class="tab_menu-item">
+                        <a href="#products/list" class="tab_menu-link">
+                            <i class="fas fa-list tab_menu-icon"></i>
+                            <span class="tab_menu-text">Product List</span>
+                        </a>
+                    </li>
+                    <li class="tab_menu-item">
+                        <a href="#products/add" class="tab_menu-link">
+                            <i class="fas fa-plus tab_menu-icon"></i>
+                            <span class="tab_menu-text">Add Product</span>
+                        </a>
+                    </li>
+                    <li class="tab_menu-item">
+                        <a href="#products/categories" class="tab_menu-link">
+                            <i class="fas fa-tags tab_menu-icon"></i>
+                            <span class="tab_menu-text">Categories</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            
+          
+        </ul>
+    </div>
+    <div class="main-content">
+        <div class="content-area"> 
+            <div id="content-body">
+                <!-- Dynamic content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Content templates
+        const contentTemplates = {
+            'dashboard': `
+                <div class="content-card">
+                    <h3>Overview</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h4>Total Sales</h4>
+                            <div class="value">$24,560</div>
+                        </div>
+                        <div class="stat-card">
+                            <h4>New Orders</h4>
+                            <div class="value">142</div>
+                        </div>
+                        <div class="stat-card">
+                            <h4>Products</h4>
+                            <div class="value">87</div>
+                        </div>
+                        <div class="stat-card">
+                            <h4>Customers</h4>
+                            <div class="value">256</div>
+                        </div>
+                    </div>
+                    <div class="content-card">
+                        <h3>Recent Activity</h3>
+                        <p>Order #10025 completed</p>
+                        <p>New customer registered</p>
+                        <p>Product "Wireless Headphones" stock updated</p>
+                    </div>
+                </div>
+            `,
+            'products/list': `
+                <div class="content-card">
+                    <h3>Product List</h3>
+                    <p>Table of products would appear here with pagination, search, and filters.</p>
+                    <ul>
+                        <li>Product 1 - $19.99 - 45 in stock</li>
+                        <li>Product 2 - $29.99 - 12 in stock</li>
+                        <li>Product 3 - $9.99 - 87 in stock</li>
+                    </ul>
+                </div>
+            `,
+            'products/add': `
+                <div class="content-card">
+                    <h3>Add New Product</h3>
+                    <form id="add-product-form">
+                        <div>
+                            <label>Product Name:</label>
+                            <input type="text" class="form-control">
+                        </div>
+                        <div>
+                            <label>Description:</label>
+                            <textarea class="form-control"></textarea>
+                        </div>
+                        <div>
+                            <label>Price:</label>
+                            <input type="number" class="form-control">
+                        </div>
+                        <div>
+                            <label>Category:</label>
+                            <select class="form-control">
+                                <option>Electronics</option>
+                                <option>Clothing</option>
+                                <option>Home Goods</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Product</button>
+                    </form>
+                </div>
+            `,
+            
+        };
+
+     $(document).ready(function() {
+    // Toggle tab_sidebar collapse
+    $('.tab_toggle-btn').click(function() {
+        $('.tab_sidebar').toggleClass('collapsed');
+    });
+    
+    // Toggle submenu
+    $('.has-submenu > a').click(function(e) {
+        e.preventDefault();
+        var parentItem = $(this).parent();
+        
+        // Close other submenus
+        parentItem.siblings().find('.submenu').removeClass('show');
+        parentItem.siblings().removeClass('active');
+        
+        // Toggle current submenu
+        $(this).next('.submenu').toggleClass('show');
+        parentItem.toggleClass('active');
+    });
+    
+    // Load content when menu item is clicked
+    $('.tab_menu-link').click(function(e) {
+        e.preventDefault();
+        
+        // Remove active class from all menu items
+        $('.tab_menu-item').removeClass('active');
+        
+        // Add active class to clicked item
+        var clickedItem = $(this).parent();
+        clickedItem.addClass('active');
+        
+        // If this is a submenu item, also activate its parent
+        if (clickedItem.parents('.submenu').length) {
+            clickedItem.parents('.has-submenu').addClass('active');
+            clickedItem.parents('.submenu').addClass('show');
+        }
+        
+        // Get the href attribute (remove #)
+        var page = $(this).attr('href').substring(1);
+        
+        // Load the appropriate content
+        loadContent(page);
+    });
+    
+    // Function to load content
+    function loadContent(page) {
+        // Show loading state
+        $('#content-body').html('<div style="text-align: center; padding: 40px;"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Loading content...</p></div>');
+        
+        // Simulate network delay
+        setTimeout(function() {
+            // Check if we have a template for this page
+            if (contentTemplates[page]) {
+                $('#content-body').html(contentTemplates[page]);
+            } else {
+                // Default content if no template exists
+                $('#content-body').html(`
+                    <div class="content-card">
+                        <h3>${$('.tab_menu-item.active > a .tab_menu-text').text() || 'Untitled'}</h3>
+                        <p>This section is under development. Content for "${page}" will be displayed here.</p>
+                    </div>
+                `);
+            }
+        }, 500); // Simulate 500ms loading delay
+    }
+    
+    // Load dashboard content by default
+    $('.tab_menu-link[href="#dashboard"]').click();
+});
+    </script>
+</body>
+</html>

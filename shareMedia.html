@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="UnfoldLabs EMM">
+    <meta name="author" content="UnfoldLabs EMM">
+    <meta name="generator" content="V 1.0">
+    <meta property="og:title" content="Google">
+    <meta property="og:description" content="Google Enrollment">
+    <meta property="og:image" content="https://www.google.com/webhp?hl=en&sa=X&ved=0ahUKEwjnlrm9nPiNAxW1XGwGHQu2IKwQPAgI">
+    <meta property="og:url" content="https://www.google.com/">
+    <meta property="twitter:title" content="Google">
+    <meta property="twitter:description" content="Google Enrollment">
+    <meta property="twitter:image" content="https://www.google.com/webhp?hl=en&sa=X&ved=0ahUKEwjnlrm9nPiNAxW1XGwGHQu2IKwQPAgI">
+    <meta property="twitter:url" content="https://www.google.com/">
+    <title> Share Media </title>
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon-16x16.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+  
+
+    <div class="white-bg">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12 col-md-7 col-lg-7">
+                      <form action="">
+
+                        <div class="form-group d-flex w-100 justify-content-center mb-4">
+                            <i class="bi bi-newspaper"></i>
+                        </div>
+
+                        <div class="btn-dflex form-group w-100 d-flex justify-content-center mb-3">
+                            <a href="#" type="button" class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#socialModal"><i class="fa fa-share-nodes me-1"></i> Share</a>
+                            <button onclick="sendEmailWithQRCodeInstructions()" type="button" class="btn btn-primary mx-2"><i class="fa fa-envelope me-1"></i> Email</button>
+                            <!--  <a href="mailto:support@unfoldlabs.com?subject=Article&body=Hello Team,%0A%0APlease click on the below link to enrol the device with MySecureMe MDM.%0<img src='http://localhost:9099/assets/images/qr_code_ios_mdm.unfoldlabs.png' width='100'>%0Ahttps://mdm.unfoldlabs.com/mdm/enroll" type="button" class="btn btn-primary mx-2"><i class="fa fa-envelope me-1"></i> Email</a> -->
+                            <a href="#" type="button" onclick="handleDownloadClick(event)" class="btn btn-primary mx-2"><i class="fa fa-download me-1"></i> Download</a>
+                        </div>
+
+
+                       
+                    </form>
+                </div>
+                <div class="col-sm-12 col-md-5  col-lg-5 text-right">
+                    <i class="bi bi-person-walking"></i>
+                </div>
+            </div>
+
+             
+        </div>
+    </div>
+    <!-- end  -->
+    <!-- Social Modal -->
+    <div class="modal fade" id="socialModal" role="dialog" aria-labelledby="socialModalLabel" aria-modal="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="socialModalLabel" class="modal-title">Share Article</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Your social sharing buttons here -->
+                    <div class="social-share">
+                        <button type="button" class="btn btn-primary" onclick="copyUrlToClipboard()"><i class="bi bi-copy"></i></button>
+                        <button type="button" class="share-btn facebook" data-network="facebook"><i class="bi bi-facebook"></i></button>
+                        <button type="button" class="share-btn twitter" data-network="twitter"><i class="bi bi-twitter-x"></i></button>
+                        <button type="button" class="share-btn linkedin" data-network="linkedin"><i class="bi bi-linkedin"></i></button>
+                        <button type="button" class="share-btn whatsapp" data-network="whatsapp"><i class="bi bi-whatsapp"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        function handleDownloadClick(event) {
+            const userOS = navigator.platform.toLowerCase();
+
+            if (userOS.includes('mac')) {
+                // Show toast for macOS users
+                window.location.href = "https://www.google.com/";
+
+            } else {
+                // Proceed with download for other OS
+                showToastMsg("Download is only supported on macOS.");
+            }
+
+            // Prevent default anchor behavior
+            event.preventDefault();
+        }
+
+
+        function sendEmailWithQRCodeInstructions() {
+            const email = 'support@unfoldlabs.com';
+            const subject = 'Article';
+            const imageUrl = 'https://www.google.com/webhp?hl=en&sa=X&ved=0ahUKEwjnlrm9nPiNAxW1XGwGHQu2IKwQPAgI';
+
+            const body = 'Hello Team,\n\nPlease download and attach the QR code from this link:\n use this direct enrollment link:\n\nhttps://mdm.unfoldlabs.com/mdm/enroll \n\nBest regards,\nMDM Support Team';
+
+            window.location.href = 'mailto:' + email + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+        }
+
+        function copyUrlToClipboard() {
+            urlText = "https://www.google.com/";
+            navigator.clipboard.writeText(urlText)
+                .then(() => {
+                    alert('URL copied to clipboard!');
+                })
+                .catch(err => {
+                    console.error('Could not copy URL: ', err);
+                    // Try fallback method
+                    const textArea = document.createElement('textarea');
+                    textArea.value = urlText;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    alert('URL copied to clipboard!');
+                });
+        }
+        // Share via social media
+        document.body.addEventListener('click', function (e) {
+            var btn = e.target.closest('.share-btn');
+            if (!btn) return;
+            e.preventDefault(); // Prevent default just in case
+            var domainurl = "https://www.google.com/";
+            var urlImage = "https://www.google.com/webhp?hl=en&sa=X&ved=0ahUKEwjnlrm9nPiNAxW1XGwGHQu2IKwQPAgI";
+            var network = btn.getAttribute('data-network');
+            var currentUrl = encodeURIComponent(urlImage);
+            var pageTitle = encodeURIComponent('Enrollment QR Code');
+
+            let shareUrl;
+
+            switch (network) {
+                case 'facebook':
+                    shareUrl = 'https://www.facebook.com/sharer/sharer.php?u=' + currentUrl + '&text=' + pageTitle;
+                    break;
+                case 'twitter':
+                    shareUrl = 'https://x.com/intent/post?url=&text=' + pageTitle + '&url=' + domainurl;
+                    break;
+                case 'linkedin':
+                    shareUrl = 'https://www.linkedin.com/feed/?linkOrigin=LI_BADGE&shareActive=true&shareUrl=' + currentUrl + '&title=' + pageTitle;
+                    break;
+                case 'whatsapp':
+                    shareUrl = 'https://wa.me/?text=' + pageTitle + '%20' + domainurl;
+                    break;
+                case 'email':
+                    shareUrl = 'mailto:?subject=' + pageTitle + '&body=Check%20this%20out:%20' + domainurl;
+                    break;
+                default:
+                    return;
+            }
+
+            window.open(shareUrl, '_blank');
+        });
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+</body>
+</html>

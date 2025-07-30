@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Email Image Link</title>
+    <style>
+        .email-image {
+            cursor: pointer;
+            border: none;
+            transition: transform 0.3s;
+        }
+
+            .email-image:hover {
+                transform: scale(1.05);
+            }
+    </style>
+</head>
+<body>
+    <div class="link-options">
+        <label><input type="checkbox" class="link-checkbox" data-link="https://example.com/link1"> First Link</label>
+        <label><input type="checkbox" class="link-checkbox" data-link="https://example.com/link2"> Second Link</label>
+        <label><input type="checkbox" class="link-checkbox" data-link="https://example.com/link3"> Third Link</label>
+    </div>
+
+    <button id="sendCheckedLinks">Email Checked Links</button>
+
+    <script>
+        document.getElementById('sendCheckedLinks').addEventListener('click', function () {
+            const checkboxes = document.querySelectorAll('.link-checkbox:checked');
+            const links = Array.from(checkboxes).map(cb => cb.dataset.link);
+
+            if (links.length === 0) {
+                alert('Please select at least one link');
+                return;
+            }
+
+            const subject = "Selected links from our site";
+            let body = "Here are the links you selected:\n\n";
+
+            links.forEach(link => {
+                body += `- ${link}\n`;
+            });
+
+            window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        });
+    </script>
+</body>
+</html>

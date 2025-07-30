@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sidebar Navigation with jQuery</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+        }
+        
+        .sidebar {
+            width: 250px;
+            background: #2c3e50;
+            color: white;
+            transition: all 0.3s;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .sidebar-header {
+            padding: 20px;
+            background: #1a252f;
+        }
+        
+        .sidebar-menu {
+            padding: 0;
+            list-style: none;
+        }
+        
+        .menu-item {
+            position: relative;
+        }
+        
+        .menu-item a {
+            display: block;
+            padding: 15px 20px;
+            color: #ecf0f1;
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+        
+        .menu-item a:hover {
+            background: #34495e;
+            border-left: 3px solid #3498db;
+        }
+        
+        .menu-item.active > a {
+            background: #34495e;
+            border-left: 3px solid #3498db;
+        }
+        
+        .submenu {
+            list-style: none;
+            padding-left: 20px;
+            display: none;
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        .submenu.show {
+            display: block;
+        }
+        
+        .submenu .menu-item a {
+            padding: 12px 20px;
+        }
+        
+        .menu-toggle {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            cursor: pointer;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        .content-area {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            min-height: calc(100vh - 40px);
+        }
+        
+        .collapsed {
+            width: 70px;
+            overflow: hidden;
+        }
+        
+        .collapsed .menu-text {
+            display: none;
+        }
+        
+        .collapsed .menu-toggle {
+            display: none;
+        }
+        
+        .collapsed .submenu {
+            position: absolute;
+            left: 70px;
+            top: 0;
+            width: 200px;
+            display: none !important;
+            z-index: 1000;
+        }
+        
+        .collapsed .menu-item:hover .submenu {
+            display: block !important;
+        }
+        
+        .toggle-btn {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            background: #34495e;
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Previous HTML structure remains the same until content-area -->
+      <div class="sidebar">
+        <div class="sidebar-header">
+            <h3>Menu</h3>
+            <button class="toggle-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        <ul class="sidebar-menu">
+            <li class="menu-item">
+                <a href="#dashboard" class="menu-link">
+                    <i class="fas fa-tachometer-alt menu-icon"></i>
+                    <span class="menu-text">Dashboard</span>
+                </a>
+            </li>
+            <li class="menu-item has-submenu">
+                <a href="#products" class="menu-link">
+                    <i class="fas fa-box-open menu-icon"></i>
+                    <span class="menu-text">Products</span>
+                    <i class="fas fa-chevron-down menu-toggle"></i>
+                </a>
+                <ul class="submenu">
+                    <li class="menu-item">
+                        <a href="#products/list" class="menu-link">
+                            <i class="fas fa-list menu-icon"></i>
+                            <span class="menu-text">Product List</span>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#products/add" class="menu-link">
+                            <i class="fas fa-plus menu-icon"></i>
+                            <span class="menu-text">Add Product</span>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#products/categories" class="menu-link">
+                            <i class="fas fa-tags menu-icon"></i>
+                            <span class="menu-text">Categories</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="menu-item has-submenu">
+                <a href="#orders" class="menu-link">
+                    <i class="fas fa-shopping-cart menu-icon"></i>
+                    <span class="menu-text">Orders</span>
+                    <i class="fas fa-chevron-down menu-toggle"></i>
+                </a>
+                <ul class="submenu">
+                    <li class="menu-item">
+                        <a href="#orders/list" class="menu-link">
+                            <i class="fas fa-list menu-icon"></i>
+                            <span class="menu-text">Order List</span>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#orders/processing" class="menu-link">
+                            <i class="fas fa-spinner menu-icon"></i>
+                            <span class="menu-text">Processing</span>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#orders/completed" class="menu-link">
+                            <i class="fas fa-check-circle menu-icon"></i>
+                            <span class="menu-text">Completed</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="menu-item">
+                <a href="#customers" class="menu-link">
+                    <i class="fas fa-users menu-icon"></i>
+                    <span class="menu-text">Customers</span>
+                </a>
+            </li>
+            <li class="menu-item has-submenu">
+                <a href="#reports" class="menu-link">
+                    <i class="fas fa-chart-bar menu-icon"></i>
+                    <span class="menu-text">Reports</span>
+                    <i class="fas fa-chevron-down menu-toggle"></i>
+                </a>
+                <ul class="submenu">
+                    <li class="menu-item">
+                        <a href="#reports/sales" class="menu-link">
+                            <i class="fas fa-chart-line menu-icon"></i>
+                            <span class="menu-text">Sales Report</span>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#reports/inventory" class="menu-link">
+                            <i class="fas fa-boxes menu-icon"></i>
+                            <span class="menu-text">Inventory Report</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="menu-item">
+                <a href="#settings" class="menu-link">
+                    <i class="fas fa-cog menu-icon"></i>
+                    <span class="menu-text">Settings</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="main-content">
+        <div class="content-area"> 
+            <div id="content-body">
+                <!-- Dynamic content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Content templates
+        const contentTemplates = {
+            'dashboard': `
+                <div class="content-card">
+                    <h3>Overview</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h4>Total Sales</h4>
+                            <div class="value">$24,560</div>
+                        </div>
+                        <div class="stat-card">
+                            <h4>New Orders</h4>
+                            <div class="value">142</div>
+                        </div>
+                        <div class="stat-card">
+                            <h4>Products</h4>
+                            <div class="value">87</div>
+                        </div>
+                        <div class="stat-card">
+                            <h4>Customers</h4>
+                            <div class="value">256</div>
+                        </div>
+                    </div>
+                    <div class="content-card">
+                        <h3>Recent Activity</h3>
+                        <p>Order #10025 completed</p>
+                        <p>New customer registered</p>
+                        <p>Product "Wireless Headphones" stock updated</p>
+                    </div>
+                </div>
+            `,
+            'products/list': `
+                <div class="content-card">
+                    <h3>Product List</h3>
+                    <p>Table of products would appear here with pagination, search, and filters.</p>
+                    <ul>
+                        <li>Product 1 - $19.99 - 45 in stock</li>
+                        <li>Product 2 - $29.99 - 12 in stock</li>
+                        <li>Product 3 - $9.99 - 87 in stock</li>
+                    </ul>
+                </div>
+            `,
+            'products/add': `
+                <div class="content-card">
+                    <h3>Add New Product</h3>
+                    <form id="add-product-form">
+                        <div>
+                            <label>Product Name:</label>
+                            <input type="text" class="form-control">
+                        </div>
+                        <div>
+                            <label>Description:</label>
+                            <textarea class="form-control"></textarea>
+                        </div>
+                        <div>
+                            <label>Price:</label>
+                            <input type="number" class="form-control">
+                        </div>
+                        <div>
+                            <label>Category:</label>
+                            <select class="form-control">
+                                <option>Electronics</option>
+                                <option>Clothing</option>
+                                <option>Home Goods</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Product</button>
+                    </form>
+                </div>
+            `,
+            'orders/list': `
+                <div class="content-card">
+                    <h3>Order List</h3>
+                    <p>Table of recent orders with status, customer, and total amount.</p>
+                    <table class="order-table">
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                        <tr>
+                            <td>#10025</td>
+                            <td>John Smith</td>
+                            <td>2023-05-15</td>
+                            <td>$125.99</td>
+                            <td>Completed</td>
+                        </tr>
+                        <tr>
+                            <td>#10024</td>
+                            <td>Sarah Johnson</td>
+                            <td>2023-05-14</td>
+                            <td>$89.50</td>
+                            <td>Processing</td>
+                        </tr>
+                    </table>
+                </div>
+            `,
+            'customers': `
+                <div class="content-card">
+                    <h3>Customer Management</h3>
+                    <p>List of all registered customers with contact information and order history.</p>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h4>Total Customers</h4>
+                            <div class="value">256</div>
+                        </div>
+                        <div class="stat-card">
+                            <h4>New This Month</h4>
+                            <div class="value">32</div>
+                        </div>
+                    </div>
+                </div>
+            `,
+            'reports/sales': `
+                <div class="content-card">
+                    <h3>Sales Report</h3>
+                    <p>Graphs and charts showing sales trends over time.</p>
+                    <div style="background: #f8f9fa; height: 300px; display: flex; align-items: center; justify-content: center;">
+                        [Sales Chart Would Appear Here]
+                    </div>
+                </div>
+            `
+        };
+
+     $(document).ready(function() {
+    // Toggle sidebar collapse
+    $('.toggle-btn').click(function() {
+        $('.sidebar').toggleClass('collapsed');
+    });
+    
+    // Toggle submenu
+    $('.has-submenu > a').click(function(e) {
+        e.preventDefault();
+        var parentItem = $(this).parent();
+        
+        // Close other submenus
+        parentItem.siblings().find('.submenu').removeClass('show');
+        parentItem.siblings().removeClass('active');
+        
+        // Toggle current submenu
+        $(this).next('.submenu').toggleClass('show');
+        parentItem.toggleClass('active');
+    });
+    
+    // Load content when menu item is clicked
+    $('.menu-link').click(function(e) {
+        e.preventDefault();
+        
+        // Remove active class from all menu items
+        $('.menu-item').removeClass('active');
+        
+        // Add active class to clicked item
+        var clickedItem = $(this).parent();
+        clickedItem.addClass('active');
+        
+        // If this is a submenu item, also activate its parent
+        if (clickedItem.parents('.submenu').length) {
+            clickedItem.parents('.has-submenu').addClass('active');
+            clickedItem.parents('.submenu').addClass('show');
+        }
+        
+        // Get the href attribute (remove #)
+        var page = $(this).attr('href').substring(1);
+        
+        // Load the appropriate content
+        loadContent(page);
+    });
+    
+    // Function to load content
+    function loadContent(page) {
+        // Show loading state
+        $('#content-body').html('<div style="text-align: center; padding: 40px;"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Loading content...</p></div>');
+        
+        // Simulate network delay
+        setTimeout(function() {
+            // Check if we have a template for this page
+            if (contentTemplates[page]) {
+                $('#content-body').html(contentTemplates[page]);
+            } else {
+                // Default content if no template exists
+                $('#content-body').html(`
+                    <div class="content-card">
+                        <h3>${$('.menu-item.active > a .menu-text').text() || 'Untitled'}</h3>
+                        <p>This section is under development. Content for "${page}" will be displayed here.</p>
+                    </div>
+                `);
+            }
+        }, 500); // Simulate 500ms loading delay
+    }
+    
+    // Load dashboard content by default
+    $('.menu-link[href="#dashboard"]').click();
+});
+    </script>
+</body>
+</html>

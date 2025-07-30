@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Sharing</title>
+    <meta property="og:title" content="Your Page Title">
+    <meta property="og:description" content="Your page description">
+    <meta property="og:image" content="http://localhost:9099/assets/images/qr_code_ios_mdm.unfoldlabs.png">
+    <meta property="og:url" content="http://localhost:9099/layout">
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script> 
+</head>
+<body>
+    
+    <div>
+        <input type="text" id="qrData" placeholder="Enter data for QR code">
+        <button onclick="generateQrCode(document.getElementById('qrData').value)">Generate QR Code</button>
+        <div id="qrcode"></div>
+        <button onclick="shareOnSocialMedia('facebook', document.querySelector('#qrcode img').src)">Share on Facebook</button>
+        <button onclick="shareOnSocialMedia('twitter', document.querySelector('#qrcode img').src)">Share on Twitter</button>
+        <button onclick="shareOnSocialMedia('linkedin', document.querySelector('#qrcode img').src)">Share on LinkedIn</button>
+        <button onclick="shareViaEmail(document.querySelector('#qrcode img').src)">Share via Email</button>
+    </div>
+
+    <script>
+
+        function generateQrCode(text) {
+            const qrcodeDiv = document.getElementById('qrcode');
+            qrcodeDiv.innerHTML = ''; // Clear previous QR code
+            new QRCode(qrcodeDiv, {
+                text: text,
+                width: 128,
+                height: 128
+            });
+        }
+        function shareOnSocialMedia(platform, qrCodeUrl) {
+            let shareUrl;
+            switch (platform) {
+                case 'facebook':
+                    shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${qrCodeUrl}`;
+                    break;
+                case 'twitter':
+                    shareUrl = `https://twitter.com/intent/tweet?url=${qrCodeUrl}`;
+                    break;
+                case 'linkedin':
+                    shareUrl = `https://www.linkedin.com/shareArticle?url=${qrCodeUrl}`;
+                    break;
+                default:
+                    console.error('Unsupported social media platform');
+                    return;
+            }
+            window.open(shareUrl, '_blank');
+        }
+        function shareViaEmail(qrCodeUrl) {
+            const subject = 'Check out this QR code!';
+            const body = `Here's the QR code: ${qrCodeUrl}`;
+            const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            window.location.href = mailtoLink;
+        }
+
+    </script>
+
+</body>
+</html>
